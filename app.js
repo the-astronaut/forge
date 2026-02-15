@@ -9,19 +9,18 @@ const WORKOUTS = [
     category: "Push Day",
     emoji: "🏋️",
     duration: 52,
-    calories: 480,
     difficulty: "Advanced",
     color: "#C6F135",
     bg: "linear-gradient(160deg, #1a2a0a, #2d4a10)",
     exercises: [
-      { id: 1, name: "Warm-up Push-ups", sets: 2, reps: 15, rest: 30, weight: "BW" },
-      { id: 2, name: "Incline Dumbbell Press", sets: 3, reps: 10, rest: 60, weight: "30kg" },
-      { id: 3, name: "Bench Press", sets: 4, reps: 8, rest: 90, weight: "80kg" },
-      { id: 4, name: "Cable Fly", sets: 3, reps: 12, rest: 60, weight: "35kg" },
-      { id: 5, name: "Tricep Pushdown", sets: 3, reps: 15, rest: 45, weight: "25kg" },
-      { id: 6, name: "Overhead Press", sets: 4, reps: 6, rest: 90, weight: "60kg" },
-      { id: 7, name: "Lateral Raises", sets: 3, reps: 15, rest: 45, weight: "12kg" },
-      { id: 8, name: "Cooldown Stretch", sets: 1, reps: 1, rest: 0, weight: "—" },
+      { id: 1, name: "Warm-up Push-ups",      muscle: "Chest",     sets: 2, reps: 15, rest: 30,  weight: "BW"  },
+      { id: 2, name: "Incline Dumbbell Press", muscle: "Chest",     sets: 3, reps: 10, rest: 60,  weight: "30kg"},
+      { id: 3, name: "Bench Press",            muscle: "Chest",     sets: 4, reps: 8,  rest: 90,  weight: "80kg"},
+      { id: 4, name: "Cable Fly",              muscle: "Chest",     sets: 3, reps: 12, rest: 60,  weight: "35kg"},
+      { id: 5, name: "Tricep Pushdown",        muscle: "Triceps",   sets: 3, reps: 15, rest: 45,  weight: "25kg"},
+      { id: 6, name: "Overhead Press",         muscle: "Shoulders", sets: 4, reps: 6,  rest: 90,  weight: "60kg"},
+      { id: 7, name: "Lateral Raises",         muscle: "Shoulders", sets: 3, reps: 15, rest: 45,  weight: "12kg"},
+      { id: 8, name: "Cooldown Stretch",       muscle: "Other",     sets: 1, reps: 1,  rest: 0,   weight: "—"  },
     ],
   },
   {
@@ -30,17 +29,16 @@ const WORKOUTS = [
     category: "Leg Day",
     emoji: "🦵",
     duration: 55,
-    calories: 620,
     difficulty: "Advanced",
     color: "#C6F135",
     bg: "linear-gradient(160deg, #1a2a0a, #0a1a0a)",
     exercises: [
-      { id: 1, name: "Squat Warm-up", sets: 2, reps: 20, rest: 30, weight: "BW" },
-      { id: 2, name: "Back Squat", sets: 5, reps: 5, rest: 120, weight: "100kg" },
-      { id: 3, name: "Romanian Deadlift", sets: 4, reps: 8, rest: 90, weight: "80kg" },
-      { id: 4, name: "Leg Press", sets: 3, reps: 12, rest: 60, weight: "140kg" },
-      { id: 5, name: "Walking Lunges", sets: 3, reps: 16, rest: 60, weight: "20kg" },
-      { id: 6, name: "Leg Curl", sets: 3, reps: 12, rest: 45, weight: "40kg" },
+      { id: 1, name: "Squat Warm-up",      muscle: "Legs", sets: 2, reps: 20, rest: 30,  weight: "BW"   },
+      { id: 2, name: "Back Squat",         muscle: "Legs", sets: 5, reps: 5,  rest: 120, weight: "100kg"},
+      { id: 3, name: "Romanian Deadlift",  muscle: "Legs", sets: 4, reps: 8,  rest: 90,  weight: "80kg" },
+      { id: 4, name: "Leg Press",          muscle: "Legs", sets: 3, reps: 12, rest: 60,  weight: "140kg"},
+      { id: 5, name: "Walking Lunges",     muscle: "Legs", sets: 3, reps: 16, rest: 60,  weight: "20kg" },
+      { id: 6, name: "Leg Curl",           muscle: "Legs", sets: 3, reps: 12, rest: 45,  weight: "40kg" },
     ],
   },
   {
@@ -49,16 +47,15 @@ const WORKOUTS = [
     category: "Recovery",
     emoji: "🧘",
     duration: 20,
-    calories: 120,
     difficulty: "All Levels",
     color: "#7B9FFF",
     bg: "linear-gradient(160deg, #1a1a2a, #101030)",
     exercises: [
-      { id: 1, name: "Hip Flexor Stretch", sets: 1, reps: 1, rest: 60, weight: "—" },
-      { id: 2, name: "Hamstring Stretch", sets: 1, reps: 1, rest: 60, weight: "—" },
-      { id: 3, name: "Pigeon Pose", sets: 1, reps: 1, rest: 90, weight: "—" },
-      { id: 4, name: "Child's Pose", sets: 1, reps: 1, rest: 60, weight: "—" },
-      { id: 5, name: "Spinal Twist", sets: 1, reps: 1, rest: 60, weight: "—" },
+      { id: 1, name: "Hip Flexor Stretch", muscle: "Other", sets: 1, reps: 1, rest: 60, weight: "—" },
+      { id: 2, name: "Hamstring Stretch",  muscle: "Legs",  sets: 1, reps: 1, rest: 60, weight: "—" },
+      { id: 3, name: "Pigeon Pose",        muscle: "Other", sets: 1, reps: 1, rest: 90, weight: "—" },
+      { id: 4, name: "Child's Pose",       muscle: "Other", sets: 1, reps: 1, rest: 60, weight: "—" },
+      { id: 5, name: "Spinal Twist",       muscle: "Core",  sets: 1, reps: 1, rest: 60, weight: "—" },
     ],
   },
   {
@@ -67,16 +64,15 @@ const WORKOUTS = [
     category: "HIIT",
     emoji: "⚡",
     duration: 30,
-    calories: 390,
     difficulty: "Intermediate",
     color: "#FF8C42",
     bg: "linear-gradient(160deg, #2a1a0a, #3d1000)",
     exercises: [
-      { id: 1, name: "Burpees", sets: 4, reps: 10, rest: 30, weight: "BW" },
-      { id: 2, name: "Box Jumps", sets: 4, reps: 8, rest: 45, weight: "BW" },
-      { id: 3, name: "Mountain Climbers", sets: 3, reps: 20, rest: 30, weight: "BW" },
-      { id: 4, name: "Kettlebell Swings", sets: 3, reps: 15, rest: 45, weight: "24kg" },
-      { id: 5, name: "Jump Rope", sets: 3, reps: 1, rest: 30, weight: "—" },
+      { id: 1, name: "Burpees",            muscle: "Cardio", sets: 4, reps: 10, rest: 30, weight: "BW"  },
+      { id: 2, name: "Box Jumps",          muscle: "Cardio", sets: 4, reps: 8,  rest: 45, weight: "BW"  },
+      { id: 3, name: "Mountain Climbers",  muscle: "Core",   sets: 3, reps: 20, rest: 30, weight: "BW"  },
+      { id: 4, name: "Kettlebell Swings",  muscle: "Cardio", sets: 3, reps: 15, rest: 45, weight: "24kg"},
+      { id: 5, name: "Jump Rope",          muscle: "Cardio", sets: 3, reps: 1,  rest: 30, weight: "—"   },
     ],
   },
 ];
@@ -85,7 +81,6 @@ const INITIAL_STATS = {
   streak: 14,
   workoutsThisWeek: 5,
   totalWorkouts: 142,
-  caloriesThisWeek: 2400,
   activeHoursThisWeek: 4.2,
   weight: 89,
   weeklyVolume: [40, 65, 30, 72, 50, 20, 58],
@@ -99,6 +94,64 @@ const ACHIEVEMENTS = [
   { id: 5, icon: "🦁", name: "Iron Lion", desc: "Lift 10,000kg total", earned: false },
   { id: 6, icon: "🌙", name: "Night Owl", desc: "Workout after 10pm", earned: false },
 ];
+
+// ─── EXERCISE LIBRARY ────────────────────────────────────────────────────────
+
+const EXERCISE_LIBRARY = [
+  // Chest
+  { id: "e1",  name: "Bench Press",           muscle: "Chest",      defaultWeight: 60,  defaultReps: 8  },
+  { id: "e2",  name: "Incline Dumbbell Press", muscle: "Chest",      defaultWeight: 28,  defaultReps: 10 },
+  { id: "e3",  name: "Cable Fly",              muscle: "Chest",      defaultWeight: 30,  defaultReps: 12 },
+  { id: "e4",  name: "Push-ups",               muscle: "Chest",      defaultWeight: "BW",defaultReps: 15 },
+  { id: "e5",  name: "Chest Dip",              muscle: "Chest",      defaultWeight: "BW",defaultReps: 10 },
+  // Back
+  { id: "e6",  name: "Deadlift",               muscle: "Back",       defaultWeight: 100, defaultReps: 5  },
+  { id: "e7",  name: "Pull-ups",               muscle: "Back",       defaultWeight: "BW",defaultReps: 8  },
+  { id: "e8",  name: "Barbell Row",            muscle: "Back",       defaultWeight: 70,  defaultReps: 8  },
+  { id: "e9",  name: "Lat Pulldown",           muscle: "Back",       defaultWeight: 60,  defaultReps: 10 },
+  { id: "e10", name: "Cable Row",              muscle: "Back",       defaultWeight: 55,  defaultReps: 12 },
+  // Legs
+  { id: "e11", name: "Back Squat",             muscle: "Legs",       defaultWeight: 80,  defaultReps: 5  },
+  { id: "e12", name: "Romanian Deadlift",      muscle: "Legs",       defaultWeight: 70,  defaultReps: 8  },
+  { id: "e13", name: "Leg Press",              muscle: "Legs",       defaultWeight: 120, defaultReps: 12 },
+  { id: "e14", name: "Walking Lunges",         muscle: "Legs",       defaultWeight: 20,  defaultReps: 16 },
+  { id: "e15", name: "Leg Curl",               muscle: "Legs",       defaultWeight: 40,  defaultReps: 12 },
+  { id: "e16", name: "Calf Raises",            muscle: "Legs",       defaultWeight: 60,  defaultReps: 20 },
+  // Shoulders
+  { id: "e17", name: "Overhead Press",         muscle: "Shoulders",  defaultWeight: 50,  defaultReps: 6  },
+  { id: "e18", name: "Lateral Raises",         muscle: "Shoulders",  defaultWeight: 12,  defaultReps: 15 },
+  { id: "e19", name: "Front Raises",           muscle: "Shoulders",  defaultWeight: 10,  defaultReps: 15 },
+  { id: "e20", name: "Face Pulls",             muscle: "Shoulders",  defaultWeight: 25,  defaultReps: 15 },
+  // Arms
+  { id: "e21", name: "Barbell Curl",           muscle: "Biceps",     defaultWeight: 30,  defaultReps: 10 },
+  { id: "e22", name: "Hammer Curl",            muscle: "Biceps",     defaultWeight: 16,  defaultReps: 12 },
+  { id: "e23", name: "Tricep Pushdown",        muscle: "Triceps",    defaultWeight: 25,  defaultReps: 15 },
+  { id: "e24", name: "Skull Crushers",         muscle: "Triceps",    defaultWeight: 30,  defaultReps: 10 },
+  { id: "e25", name: "Dips",                   muscle: "Triceps",    defaultWeight: "BW",defaultReps: 12 },
+  // Core / Cardio
+  { id: "e26", name: "Plank",                  muscle: "Core",       defaultWeight: "—", defaultReps: 1  },
+  { id: "e27", name: "Crunches",               muscle: "Core",       defaultWeight: "BW",defaultReps: 20 },
+  { id: "e28", name: "Burpees",                muscle: "Cardio",     defaultWeight: "BW",defaultReps: 10 },
+  { id: "e29", name: "Box Jumps",              muscle: "Cardio",     defaultWeight: "BW",defaultReps: 8  },
+  { id: "e30", name: "Kettlebell Swings",      muscle: "Cardio",     defaultWeight: 24,  defaultReps: 15 },
+];
+
+const WORKOUT_CATEGORIES = ["Custom", "Push Day", "Pull Day", "Leg Day", "Full Body", "HIIT", "Recovery"];
+const EMOJIS = ["💪", "🔥", "⚡", "🏋️", "🦵", "🧘", "🏃", "⚔️"];
+
+const MUSCLE_META = {
+  Chest:     { upper: true  },
+  Back:      { upper: true  },
+  Shoulders: { upper: true  },
+  Biceps:    { upper: true  },
+  Triceps:   { upper: true  },
+  Legs:      { upper: false },
+  Core:      { upper: false },
+  Cardio:    { upper: false },
+  Other:     { upper: true  },
+};
+
+const ALL_MUSCLE_GROUPS = Object.keys(MUSCLE_META);
 
 // ─── STYLES ──────────────────────────────────────────────────────────────────
 
@@ -668,6 +721,218 @@ const css = `
   .empty-state { text-align: center; padding: 40px 24px; color: var(--gray); }
   .empty-state .icon { font-size: 40px; margin-bottom: 10px; }
   .empty-state p { font-size: 14px; }
+
+  /* ── CREATE WORKOUT SCREEN ── */
+  .create-topbar {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 20px 0; flex-shrink: 0;
+  }
+
+  .create-title-input {
+    background: transparent; border: none; outline: none;
+    font-family: 'Bebas Neue', sans-serif; font-size: 30px;
+    color: var(--white); letter-spacing: 1px; width: 100%;
+    caret-color: var(--lime);
+  }
+
+  .create-title-input::placeholder { color: #444; }
+
+  .field-label {
+    font-size: 9px; text-transform: uppercase; letter-spacing: 2px;
+    color: var(--gray); font-weight: 600; margin-bottom: 6px;
+  }
+
+  .category-chips { display: flex; gap: 7px; flex-wrap: wrap; }
+
+  .category-chip {
+    padding: 6px 12px; border-radius: 10px;
+    font-size: 11px; font-weight: 600;
+    cursor: pointer; transition: all 0.15s;
+    border: 1px solid var(--border); background: var(--card);
+    color: var(--gray); user-select: none;
+  }
+
+  .category-chip.selected {
+    background: rgba(198,241,53,0.12);
+    border-color: rgba(198,241,53,0.4);
+    color: var(--lime);
+  }
+
+  /* Exercise search */
+  .search-wrap {
+    position: relative; margin: 0 20px;
+  }
+
+  .search-input {
+    width: 100%; background: var(--card);
+    border: 1px solid var(--border); border-radius: 14px;
+    padding: 11px 14px 11px 38px;
+    font-family: 'DM Sans', sans-serif; font-size: 14px;
+    color: var(--white); outline: none;
+    caret-color: var(--lime);
+    transition: border-color 0.2s;
+  }
+
+  .search-input:focus { border-color: rgba(198,241,53,0.35); }
+  .search-input::placeholder { color: #555; }
+
+  .search-icon {
+    position: absolute; left: 12px; top: 50%;
+    transform: translateY(-50%); pointer-events: none;
+  }
+
+  .search-results {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 14px; margin: 6px 20px 0;
+    overflow: hidden; max-height: 200px; overflow-y: auto;
+  }
+
+  .search-result-item {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 11px 14px; border-bottom: 1px solid rgba(255,255,255,0.04);
+    cursor: pointer; transition: background 0.1s;
+    user-select: none;
+  }
+
+  .search-result-item:last-child { border-bottom: none; }
+  .search-result-item:active { background: rgba(255,255,255,0.05); }
+
+  .sri-name { font-size: 14px; font-weight: 500; color: var(--white); }
+  .sri-muscle { font-size: 11px; color: var(--gray); margin-top: 1px; }
+
+  .sri-add {
+    width: 28px; height: 28px; border-radius: 8px;
+    background: rgba(198,241,53,0.12); border: 1px solid rgba(198,241,53,0.3);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+
+  /* Builder exercise list */
+  .builder-ex-card {
+    margin: 0 20px 10px;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 16px; overflow: hidden;
+  }
+
+  .builder-ex-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 11px 14px;
+    background: rgba(198,241,53,0.04);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .builder-ex-name {
+    font-family: 'Bebas Neue', sans-serif; font-size: 18px;
+    color: var(--white); letter-spacing: 0.5px;
+  }
+
+  .builder-ex-muscle { font-size: 10px; color: var(--gray); margin-top: 1px; }
+
+  .remove-btn {
+    width: 28px; height: 28px; border-radius: 8px;
+    background: rgba(255,69,69,0.08); border: 1px solid rgba(255,69,69,0.2);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: all 0.15s; flex-shrink: 0;
+  }
+
+  .remove-btn:active { background: rgba(255,69,69,0.2); transform: scale(0.88); }
+
+  .builder-config-row {
+    display: grid; grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 0; padding: 10px 14px; align-items: center;
+  }
+
+  .config-cell { text-align: center; }
+
+  .config-label {
+    font-size: 8px; text-transform: uppercase; letter-spacing: 1.5px;
+    color: var(--gray); font-weight: 600; margin-bottom: 5px;
+  }
+
+  .config-stepper-row {
+    display: flex; align-items: center; justify-content: center; gap: 3px;
+  }
+
+  .cfg-btn {
+    width: 22px; height: 22px; border-radius: 6px;
+    background: rgba(255,255,255,0.06); border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 12px; color: var(--gray-light);
+    user-select: none; transition: background 0.1s;
+  }
+
+  .cfg-btn:active { background: rgba(255,255,255,0.14); }
+
+  .cfg-val {
+    font-family: 'Space Mono', monospace; font-size: 13px;
+    font-weight: 700; color: var(--white);
+    min-width: 22px; text-align: center;
+  }
+
+  .empty-builder {
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; padding: 28px 24px; text-align: center;
+    border: 1.5px dashed var(--border); border-radius: 16px;
+    margin: 0 20px;
+  }
+
+  .empty-builder-icon { font-size: 32px; margin-bottom: 8px; opacity: 0.4; }
+  .empty-builder-text { font-size: 13px; color: var(--gray); }
+
+  /* Custom exercise row in dropdown */
+  .custom-ex-trigger {
+    display: flex; align-items: center; gap: 10px;
+    padding: 11px 14px;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer; transition: background 0.12s;
+    background: rgba(198,241,53,0.03);
+  }
+  .custom-ex-trigger:active { background: rgba(198,241,53,0.08); }
+
+  .custom-ex-icon {
+    width: 28px; height: 28px; border-radius: 8px;
+    background: rgba(198,241,53,0.12); border: 1px solid rgba(198,241,53,0.3);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+
+  .custom-ex-label { font-size: 13px; font-weight: 600; color: var(--lime); }
+  .custom-ex-sub { font-size: 10px; color: var(--gray); margin-top: 1px; }
+
+  .custom-ex-form {
+    padding: 12px 14px 14px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(198,241,53,0.03);
+  }
+
+  .custom-ex-input {
+    width: 100%; background: var(--surface);
+    border: 1px solid var(--border); border-radius: 10px;
+    padding: 9px 12px;
+    font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500;
+    color: var(--white); outline: none; caret-color: var(--lime);
+    transition: border-color 0.2s; margin-bottom: 8px;
+  }
+  .custom-ex-input:focus { border-color: rgba(198,241,53,0.35); }
+  .custom-ex-input::placeholder { color: #444; }
+
+  .muscle-chips { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 10px; }
+
+  .muscle-chip {
+    padding: 4px 10px; border-radius: 8px;
+    font-size: 11px; font-weight: 600; cursor: pointer;
+    background: var(--surface); border: 1px solid var(--border);
+    color: var(--gray); user-select: none; transition: all 0.12s;
+  }
+  .muscle-chip.selected { background: rgba(198,241,53,0.12); border-color: rgba(198,241,53,0.35); color: var(--lime); }
+
+  .custom-add-btn {
+    width: 100%; height: 36px; border-radius: 10px;
+    border: none; font-family: 'Bebas Neue', sans-serif;
+    font-size: 16px; letter-spacing: 1.5px;
+    cursor: pointer; transition: opacity 0.15s;
+  }
+  .custom-add-btn:not(:disabled) { background: var(--lime); color: var(--black); }
+  .custom-add-btn:disabled { background: var(--card); color: #444; border: 1px solid var(--border); cursor: default; opacity: 0.4; }
 `;
 
 // ─── NAV ICONS ───────────────────────────────────────────────────────────────
@@ -723,8 +988,10 @@ function ForgeApp() {
   const [workoutPartial, setWorkoutPartial] = useState(false);
   const [workoutDuration, setWorkoutDuration] = useState(0);
   const [stats, setStats] = useState(INITIAL_STATS);
-  const [chartPeriod, setChartPeriod] = useState("W");
+  const [workoutLog, setWorkoutLog] = useState([]);
   const [filterCategory, setFilterCategory] = useState("All");
+  const [customWorkouts, setCustomWorkouts] = useState([]);
+  const [customExercises, setCustomExercises] = useState([]);
 
   const timerRef = useRef(null);
   const durationRef = useRef(null);
@@ -763,6 +1030,23 @@ function ForgeApp() {
     return () => clearTimeout(timerRef.current);
   }, [restActive, restSeconds]);
 
+  const buildLogEntry = useCallback((workout, doneMap, logMap) => {
+    const exercises = workout.exercises
+      .map(ex => {
+        const doneSets = (doneMap[ex.id] || []).filter(Boolean).length;
+        if (doneSets === 0) return null;
+        const weights = (logMap[ex.id] || [])
+          .filter((_, i) => doneMap[ex.id]?.[i])
+          .map(s => typeof s.weight === "number" ? s.weight : null)
+          .filter(w => w !== null);
+        const avgWeight = weights.length ? weights.reduce((a, b) => a + b, 0) / weights.length : null;
+        const maxWeight = weights.length ? Math.max(...weights) : null;
+        return { name: ex.name, muscle: ex.muscle || "Other", setsLogged: doneSets, avgWeight, maxWeight };
+      })
+      .filter(Boolean);
+    return { date: new Date().toISOString(), workoutName: workout.name, exercises };
+  }, []);
+
   const logSet = useCallback((exId, setIdx) => {
     if (!activeWorkout) return;
     const newDone = { ...setDone, [exId]: [...setDone[exId]] };
@@ -771,7 +1055,6 @@ function ForgeApp() {
 
     const exList = activeWorkout.exercises;
     const thisEx = exList.find(e => e.id === exId);
-
     let nextEx = null, nextSetIdx = null;
     outer: for (let ei = 0; ei < exList.length; ei++) {
       const ex = exList[ei];
@@ -784,12 +1067,12 @@ function ForgeApp() {
     if (allDone) {
       setRestActive(false);
       setShowComplete(true);
+      setWorkoutLog(prev => [...prev, buildLogEntry(activeWorkout, newDone, setLog)]);
       setStats(s => ({
         ...s,
         streak: s.streak + 1,
         workoutsThisWeek: Math.min(s.workoutsThisWeek + 1, 7),
         totalWorkouts: s.totalWorkouts + 1,
-        caloriesThisWeek: s.caloriesThisWeek + activeWorkout.calories,
         weeklyVolume: s.weeklyVolume.map((v, i) => i === 6 ? v + 20 : v),
       }));
       return;
@@ -801,7 +1084,7 @@ function ForgeApp() {
     setRestNextEx(nextEx);
     setRestNextSetIdx(nextSetIdx);
     setRestActive(true);
-  }, [activeWorkout, setDone]);
+  }, [activeWorkout, setDone, setLog, buildLogEntry]);
 
   const adjustSet = useCallback((exId, setIdx, field, delta) => {
     setSetLog(prev => {
@@ -826,21 +1109,23 @@ function ForgeApp() {
     setRestActive(false);
     setShowComplete(true);
     setWorkoutPartial(true);
+    if (activeWorkout) {
+      setWorkoutLog(prev => [...prev, buildLogEntry(activeWorkout, setDone, setLog)]);
+    }
     setStats(s => ({
       ...s,
       totalWorkouts: s.totalWorkouts + 1,
       weeklyVolume: s.weeklyVolume.map((v, i) => i === 6 ? v + 10 : v),
     }));
-  }, []);
+  }, [activeWorkout, setDone, setLog, buildLogEntry]);
 
   const formatTime = s => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
   const formatDuration = s => `${Math.floor(s / 60)}m ${s % 60}s`;
 
-  const days = ["M", "T", "W", "T", "F", "S", "S"];
-  const maxBar = Math.max(...stats.weeklyVolume);
-  const categories = ["All", "Strength", "HIIT", "Recovery"];
-  const categoryMap = { "Strength": ["Push Day", "Leg Day"], "HIIT": ["HIIT"], "Recovery": ["Recovery"] };
-  const filteredWorkouts = filterCategory === "All" ? WORKOUTS : WORKOUTS.filter(w => (categoryMap[filterCategory] || []).includes(w.category));
+  const categories = ["All", "Strength", "HIIT", "Recovery", "Custom"];
+  const categoryMap = { "Strength": ["Push Day", "Leg Day"], "HIIT": ["HIIT"], "Recovery": ["Recovery"], "Custom": ["Custom"] };
+  const allWorkouts = [...WORKOUTS, ...customWorkouts];
+  const filteredWorkouts = filterCategory === "All" ? allWorkouts : allWorkouts.filter(w => (categoryMap[filterCategory] || []).includes(w.category));
 
   const totalSetsDone = activeWorkout
     ? activeWorkout.exercises.reduce((acc, ex) => acc + (setDone[ex.id] || []).filter(Boolean).length, 0)
@@ -877,7 +1162,18 @@ function ForgeApp() {
           </div>
 
           {tab === "home" && <HomeScreen stats={stats} onStartWorkout={startWorkout} onNavigate={setTab} />}
-          {tab === "explore" && <ExploreScreen workouts={filteredWorkouts} categories={categories} filterCategory={filterCategory} setFilterCategory={setFilterCategory} onStartWorkout={startWorkout} />}
+          {tab === "explore" && <ExploreScreen workouts={filteredWorkouts} categories={categories} filterCategory={filterCategory} setFilterCategory={setFilterCategory} onStartWorkout={startWorkout} onCreateWorkout={() => setTab("create")} />}
+          {tab === "create" && (
+            <CreateWorkoutScreen
+              customExercises={customExercises}
+              onAddCustomExercise={(ex) => setCustomExercises(prev => [...prev, ex])}
+              onBack={() => setTab("explore")}
+              onSave={(w) => {
+                setCustomWorkouts(prev => [...prev, w]);
+                setTab("explore");
+              }}
+            />
+          )}
           {tab === "workout" && activeWorkout && (
             <WorkoutScreen
               workout={activeWorkout}
@@ -905,10 +1201,10 @@ function ForgeApp() {
               onDone={() => { setRestActive(false); setActiveWorkout(null); setWorkoutPartial(false); setTab("home"); }}
             />
           )}
-          {tab === "progress" && <ProgressScreen stats={stats} chartPeriod={chartPeriod} setChartPeriod={setChartPeriod} days={days} maxBar={maxBar} />}
+          {tab === "progress" && <ProgressScreen workoutLog={workoutLog} />}
           {tab === "profile" && <ProfileScreen stats={stats} />}
 
-          {tab !== "workout" && (
+          {tab !== "workout" && tab !== "create" && (
             <div className="bottom-nav">
               {["home", "explore", "progress", "profile"].map(t => (
                 <div key={t} className={`nav-item pressable ${tab === t ? "active" : ""}`} onClick={() => setTab(t)}>
@@ -960,7 +1256,6 @@ function HomeScreen({ stats, onStartWorkout, onNavigate }) {
             <div className="plan-name">{todayWorkout.name}</div>
             <div className="plan-meta">
               <span>⏱ {todayWorkout.duration} min</span>
-              <span>🔥 {todayWorkout.calories} kcal</span>
               <span>💪 {todayWorkout.exercises.length} exercises</span>
             </div>
           </div>
@@ -979,11 +1274,6 @@ function HomeScreen({ stats, onStartWorkout, onNavigate }) {
             <div className="stat-icon">💪</div>
             <div className="stat-val">{stats.workoutsThisWeek}<span className="stat-unit"> /6</span></div>
             <div className="stat-lbl">Workouts</div>
-          </div>
-          <div className="stat-card">
-            <div className="stat-icon">🔥</div>
-            <div className="stat-val">{(stats.caloriesThisWeek / 1000).toFixed(1)}<span className="stat-unit">k</span></div>
-            <div className="stat-lbl">Calories</div>
           </div>
           <div className="stat-card">
             <div className="stat-icon">⏱</div>
@@ -1020,13 +1310,32 @@ function HomeScreen({ stats, onStartWorkout, onNavigate }) {
 
 // ─── EXPLORE SCREEN ──────────────────────────────────────────────────────────
 
-function ExploreScreen({ workouts, categories, filterCategory, setFilterCategory, onStartWorkout }) {
-  const tagColors = { "Push Day": "#C6F135", "Leg Day": "#C6F135", "Recovery": "#7B9FFF", "HIIT": "#FF8C42" };
+function ExploreScreen({ workouts, categories, filterCategory, setFilterCategory, onStartWorkout, onCreateWorkout }) {
+  const tagColors = { "Push Day": "#C6F135", "Leg Day": "#C6F135", "Recovery": "#7B9FFF", "HIIT": "#FF8C42", "Custom": "#FF8C42" };
   return (
     <div className="screen">
       <div className="explore-header">
-        <div className="explore-title">WORKOUTS</div>
-        <div className="explore-sub">{workouts.length} programs available</div>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+          <div>
+            <div className="explore-title">WORKOUTS</div>
+            <div className="explore-sub">{workouts.length} programs available</div>
+          </div>
+          <button
+            className="pressable"
+            onClick={onCreateWorkout}
+            style={{
+              display: "flex", alignItems: "center", gap: 7,
+              background: "var(--lime)", border: "none", borderRadius: 14,
+              padding: "10px 16px", cursor: "pointer",
+              fontFamily: "'Bebas Neue', sans-serif", fontSize: 16,
+              color: "var(--black)", letterSpacing: 1.5,
+              marginTop: 4, flexShrink: 0,
+            }}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" strokeWidth="3" strokeLinecap="round"><path d="M12 5v14M5 12h14"/></svg>
+            CREATE
+          </button>
+        </div>
       </div>
       <div className="filter-row">
         {categories.map(c => (
@@ -1047,13 +1356,407 @@ function ExploreScreen({ workouts, categories, filterCategory, setFilterCategory
               <div className="ec-name">{w.name}</div>
               <div className="ec-meta">
                 <span>⏱ {w.duration} min</span>
-                <span>🔥 {w.calories} kcal</span>
                 <span>⚡ {w.difficulty}</span>
               </div>
             </div>
           </div>
         ))}
         <div style={{ height: 16 }} />
+      </div>
+    </div>
+  );
+}
+
+// ─── CREATE WORKOUT SCREEN ───────────────────────────────────────────────────
+
+function CreateWorkoutScreen({ customExercises, onAddCustomExercise, onBack, onSave }) {
+  const [name, setName] = useState("");
+  const [category, setCategory] = useState("Custom");
+  const [emoji, setEmoji] = useState("💪");
+  const [exercises, setExercises] = useState([]);
+  const [search, setSearch] = useState("");
+  const [showSearch, setShowSearch] = useState(false);
+  const [showCustomForm, setShowCustomForm] = useState(false);
+  const [customExName, setCustomExName] = useState("");
+  const [customExMuscle, setCustomExMuscle] = useState("");
+  const [customExWeightType, setCustomExWeightType] = useState("kg");
+  const searchRef = useRef(null);
+  const customNameRef = useRef(null);
+
+  const fullLibrary = useMemo(() => {
+    const customAsLibrary = customExercises.map(e => ({
+      ...e,
+      isCustom: true,
+    }));
+    return [...customAsLibrary, ...EXERCISE_LIBRARY];
+  }, [customExercises]);
+
+  const filteredLibrary = search.trim().length > 0
+    ? fullLibrary.filter(e =>
+        e.name.toLowerCase().includes(search.toLowerCase()) ||
+        e.muscle.toLowerCase().includes(search.toLowerCase())
+      )
+    : fullLibrary.slice(0, 12);
+
+  const addExercise = (libEx) => {
+    setExercises(prev => [...prev, {
+      id: Date.now() + Math.random(),
+      name: libEx.name,
+      muscle: libEx.muscle,
+      sets: 3,
+      reps: libEx.defaultReps,
+      rest: 60,
+      weight: libEx.defaultWeight,
+    }]);
+    setSearch("");
+    setShowSearch(false);
+  };
+
+  const addCustomExercise = () => {
+    const trimmedName = customExName.trim();
+    const trimmedMuscle = customExMuscle.trim() || "Other";
+    if (!trimmedName) return;
+
+    const defaultWeight = customExWeightType === "BW" ? "BW" : 0;
+
+    const libraryEntry = {
+      id: `custom_${Date.now()}`,
+      name: trimmedName,
+      muscle: trimmedMuscle,
+      defaultWeight,
+      defaultReps: 10,
+      isCustom: true,
+    };
+    onAddCustomExercise(libraryEntry);
+
+    setExercises(prev => [...prev, {
+      id: Date.now() + Math.random(),
+      name: trimmedName,
+      muscle: trimmedMuscle,
+      sets: 3,
+      reps: 10,
+      rest: 60,
+      weight: defaultWeight,
+    }]);
+    setCustomExName("");
+    setCustomExMuscle("");
+    setCustomExWeightType("kg");
+    setShowCustomForm(false);
+    setShowSearch(false);
+  };
+
+  const removeExercise = (id) => setExercises(prev => prev.filter(e => e.id !== id));
+
+  const adjustEx = (id, field, delta) => {
+    setExercises(prev => prev.map(ex => {
+      if (ex.id !== id) return ex;
+      if (field === "sets") return { ...ex, sets: Math.max(1, ex.sets + delta) };
+      if (field === "reps") return { ...ex, reps: Math.max(1, ex.reps + delta) };
+      if (field === "rest") return { ...ex, rest: Math.max(0, ex.rest + delta) };
+      if (field === "weight") {
+        if (ex.weight === "BW" || ex.weight === "—") return ex;
+        return { ...ex, weight: Math.max(0, ex.weight + delta) };
+      }
+      return ex;
+    }));
+  };
+
+  const estimatedDuration = exercises.reduce((acc, ex) => {
+    const setTime = 45;
+    const restTime = ex.rest;
+    return acc + ex.sets * (setTime + restTime);
+  }, 0);
+
+  const canSave = name.trim().length > 0 && exercises.length > 0;
+
+  const handleSave = () => {
+    const workout = {
+      id: Date.now(),
+      name: name.trim().toUpperCase(),
+      category,
+      emoji,
+      duration: Math.round(estimatedDuration / 60),
+      difficulty: exercises.length > 5 ? "Advanced" : exercises.length > 3 ? "Intermediate" : "Beginner",
+      color: "#FF8C42",
+      bg: "linear-gradient(160deg, #2a1a0a, #1a0a00)",
+      exercises: exercises.map((ex, i) => ({
+        id: i + 1,
+        name: ex.name,
+        muscle: ex.muscle,
+        sets: ex.sets,
+        reps: ex.reps,
+        rest: ex.rest,
+        weight: typeof ex.weight === "number" ? `${ex.weight}kg` : ex.weight,
+      })),
+    };
+    onSave(workout);
+  };
+
+  return (
+    <div className="screen" style={{ position: "relative" }}>
+      <div className="create-topbar">
+        <button className="back-btn" onClick={onBack}>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F0F0F0" strokeWidth="2.5" strokeLinecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 18, color: "var(--white)", letterSpacing: 2 }}>BUILD WORKOUT</div>
+        <button
+          className="pressable"
+          onClick={canSave ? handleSave : undefined}
+          style={{
+            background: canSave ? "var(--lime)" : "var(--card)",
+            border: canSave ? "none" : "1px solid var(--border)",
+            borderRadius: 12, padding: "7px 14px",
+            fontFamily: "'Bebas Neue', sans-serif", fontSize: 15,
+            color: canSave ? "var(--black)" : "#444",
+            cursor: canSave ? "pointer" : "default",
+            letterSpacing: 1, transition: "all 0.2s",
+          }}
+        >
+          SAVE
+        </button>
+      </div>
+
+      <div className="scroll-area" style={{ paddingTop: 2 }}>
+        <div style={{ padding: "14px 20px 0" }}>
+          <div className="field-label">Workout Name</div>
+          <div style={{ background: "var(--card)", border: "1px solid var(--border)", borderRadius: 14, padding: "10px 14px", display: "flex", alignItems: "center", gap: 10 }}>
+            <div style={{ position: "relative" }}>
+              <div
+                className="pressable"
+                style={{ fontSize: 22, cursor: "pointer", lineHeight: 1 }}
+                onClick={() => {
+                  const next = EMOJIS[(EMOJIS.indexOf(emoji) + 1) % EMOJIS.length];
+                  setEmoji(next);
+                }}
+                title="Tap to change"
+              >{emoji}</div>
+            </div>
+            <input
+              className="create-title-input"
+              placeholder="e.g. MONDAY GRIND"
+              value={name}
+              onChange={e => setName(e.target.value)}
+              maxLength={30}
+            />
+          </div>
+        </div>
+
+        <div style={{ padding: "12px 20px 0" }}>
+          <div className="field-label">Category</div>
+          <div className="category-chips">
+            {WORKOUT_CATEGORIES.map(c => (
+              <div
+                key={c}
+                className={`category-chip pressable ${category === c ? "selected" : ""}`}
+                onClick={() => setCategory(c)}
+              >{c}</div>
+            ))}
+          </div>
+        </div>
+
+        <div style={{ padding: "14px 0 0" }}>
+          <div className="field-label" style={{ padding: "0 20px" }}>Exercises</div>
+          <div className="search-wrap">
+            <svg className="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#555" strokeWidth="2.5" strokeLinecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <input
+              ref={searchRef}
+              className="search-input"
+              placeholder="Search exercises to add..."
+              value={search}
+              onChange={e => { setSearch(e.target.value); setShowSearch(true); }}
+              onFocus={() => setShowSearch(true)}
+            />
+          </div>
+
+          {showSearch && (
+            <div className="search-results">
+              {!showCustomForm ? (
+                <div
+                  className="custom-ex-trigger"
+                  onClick={() => {
+                    setShowCustomForm(true);
+                    setTimeout(() => customNameRef.current?.focus(), 50);
+                  }}
+                >
+                  <div className="custom-ex-icon">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--lime)" strokeWidth="3" strokeLinecap="round"><path d="M12 5v14M5 12h14"/></svg>
+                  </div>
+                  <div>
+                    <div className="custom-ex-label">Create custom exercise</div>
+                    <div className="custom-ex-sub">Name it yourself & pick a muscle group</div>
+                  </div>
+                </div>
+              ) : (
+                <div className="custom-ex-form">
+                  <input
+                    ref={customNameRef}
+                    className="custom-ex-input"
+                    placeholder="Exercise name, e.g. Zercher Squat"
+                    value={customExName}
+                    onChange={e => setCustomExName(e.target.value)}
+                    onKeyDown={e => e.key === "Enter" && customExName.trim() && addCustomExercise()}
+                    maxLength={40}
+                  />
+                  <div className="muscle-chips">
+                    {["Chest","Back","Shoulders","Biceps","Triceps","Legs","Core","Cardio","Other"].map(m => (
+                      <div
+                        key={m}
+                        className={`muscle-chip pressable ${customExMuscle === m ? "selected" : ""}`}
+                        onClick={() => setCustomExMuscle(prev => prev === m ? "" : m)}
+                      >{m}</div>
+                    ))}
+                  </div>
+                  <div style={{ marginBottom: 10 }}>
+                    <div className="field-label" style={{ marginBottom: 6 }}>Weight Type</div>
+                    <div style={{ display: "flex", gap: 6 }}>
+                      {[
+                        { val: "kg",  label: "🏋️ Weighted (kg)" },
+                        { val: "BW",  label: "🤸 Bodyweight" },
+                      ].map(opt => (
+                        <div
+                          key={opt.val}
+                          className={`muscle-chip pressable ${customExWeightType === opt.val ? "selected" : ""}`}
+                          style={{ flex: 1, textAlign: "center", padding: "7px 0" }}
+                          onClick={() => setCustomExWeightType(opt.val)}
+                        >{opt.label}</div>
+                      ))}
+                    </div>
+                  </div>
+                  <div style={{ display: "flex", gap: 8 }}>
+                    <button
+                      className="pressable"
+                      style={{ height: 36, borderRadius: 10, background: "var(--card)", border: "1px solid var(--border)", color: "var(--gray)", cursor: "pointer", padding: "0 14px", fontSize: 13, fontWeight: 600 }}
+                      onClick={() => { setShowCustomForm(false); setCustomExName(""); setCustomExMuscle(""); setCustomExWeightType("kg"); }}
+                    >Cancel</button>
+                    <button
+                      className="custom-add-btn pressable"
+                      disabled={!customExName.trim()}
+                      onClick={addCustomExercise}
+                    >ADD EXERCISE</button>
+                  </div>
+                </div>
+              )}
+
+              {filteredLibrary.length === 0 && search.trim() ? (
+                <div style={{ padding: "12px 14px", color: "var(--gray)", fontSize: 13 }}>No matches — use "Create custom" above</div>
+              ) : filteredLibrary.map(ex => {
+                const alreadyAdded = exercises.some(e => e.name === ex.name);
+                return (
+                  <div
+                    key={ex.id}
+                    className="search-result-item"
+                    onClick={() => !alreadyAdded && addExercise(ex)}
+                    style={{ opacity: alreadyAdded ? 0.4 : 1 }}
+                  >
+                    <div>
+                      <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                        <div className="sri-name">{ex.name}</div>
+                        {ex.isCustom && (
+                          <div style={{ fontSize: 9, fontWeight: 700, color: "var(--lime)", background: "rgba(198,241,53,0.1)", border: "1px solid rgba(198,241,53,0.25)", borderRadius: 5, padding: "1px 5px", letterSpacing: 0.5 }}>MY</div>
+                        )}
+                      </div>
+                      <div className="sri-muscle">{ex.muscle}</div>
+                    </div>
+                    {alreadyAdded ? (
+                      <div style={{ fontSize: 11, color: "var(--lime)", fontWeight: 700 }}>ADDED</div>
+                    ) : (
+                      <div className="sri-add">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--lime)" strokeWidth="3" strokeLinecap="round"><path d="M12 5v14M5 12h14"/></svg>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          {showSearch && (
+            <div
+              style={{ padding: "6px 20px 0", fontSize: 11, color: "var(--gray)", cursor: "pointer", textAlign: "right" }}
+              onClick={() => { setShowSearch(false); setShowCustomForm(false); setCustomExName(""); setCustomExMuscle(""); setCustomExWeightType("kg"); }}
+            >
+              Close ✕
+            </div>
+          )}
+        </div>
+
+        <div style={{ marginTop: 14 }}>
+          {exercises.length === 0 ? (
+            <div className="empty-builder">
+              <div className="empty-builder-icon">🏋️</div>
+              <div className="empty-builder-text">Search above to add exercises to your workout</div>
+            </div>
+          ) : exercises.map((ex, idx) => (
+            <div key={ex.id} className="builder-ex-card">
+              <div className="builder-ex-header">
+                <div>
+                  <div className="builder-ex-name">{ex.name}</div>
+                  <div className="builder-ex-muscle">{ex.muscle}</div>
+                </div>
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 10, color: "var(--gray)" }}>#{idx + 1}</div>
+                  <div className="remove-btn" onClick={() => removeExercise(ex.id)}>
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--red)" strokeWidth="2.5" strokeLinecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                  </div>
+                </div>
+              </div>
+
+              <div className="builder-config-row">
+                {[
+                  { label: "SETS", field: "sets", val: ex.sets, delta: 1, suffix: "" },
+                  { label: "REPS", field: "reps", val: ex.reps, delta: 1, suffix: "" },
+                  { label: "WEIGHT", field: "weight", val: typeof ex.weight === "number" ? ex.weight : null, display: typeof ex.weight === "number" ? `${ex.weight}kg` : ex.weight, delta: 2.5 },
+                  { label: "REST", field: "rest", val: ex.rest, delta: 15, suffix: "s" },
+                ].map(({ label, field, val, display, delta, suffix }) => (
+                  <div key={field} className="config-cell">
+                    <div className="config-label">{label}</div>
+                    <div className="config-stepper-row">
+                      <div className={`cfg-btn pressable ${val === null ? "disabled" : ""}`} style={{ opacity: val === null ? 0.25 : 1, cursor: val === null ? "default" : "pointer" }} onClick={() => val !== null && adjustEx(ex.id, field, -delta)}>−</div>
+                      <div className="cfg-val">{display !== undefined ? display : `${val}${suffix}`}</div>
+                      <div className={`cfg-btn pressable ${val === null ? "disabled" : ""}`} style={{ opacity: val === null ? 0.25 : 1, cursor: val === null ? "default" : "pointer" }} onClick={() => val !== null && adjustEx(ex.id, field, delta)}>+</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {exercises.length > 0 && (
+          <div style={{ margin: "10px 20px 0", background: "var(--card)", border: "1px solid var(--border)", borderRadius: 14, padding: "12px 16px", display: "flex", justifyContent: "space-around" }}>
+            <div style={{ textAlign: "center" }}>
+              <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 22, color: "var(--white)" }}>{exercises.length}</div>
+              <div style={{ fontSize: 9, color: "var(--gray)", textTransform: "uppercase", letterSpacing: 1 }}>Exercises</div>
+            </div>
+            <div style={{ textAlign: "center" }}>
+              <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 22, color: "var(--white)" }}>{exercises.reduce((a, e) => a + e.sets, 0)}</div>
+              <div style={{ fontSize: 9, color: "var(--gray)", textTransform: "uppercase", letterSpacing: 1 }}>Total Sets</div>
+            </div>
+            <div style={{ textAlign: "center" }}>
+              <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 22, color: "var(--lime)" }}>~{Math.round(estimatedDuration / 60)}</div>
+              <div style={{ fontSize: 9, color: "var(--gray)", textTransform: "uppercase", letterSpacing: 1 }}>Est. Mins</div>
+            </div>
+          </div>
+        )}
+
+        <div style={{ height: 24 }} />
+      </div>
+
+      <div style={{ padding: "12px 20px 20px", background: "var(--black)", flexShrink: 0 }}>
+        <button
+          className="cta-btn pressable"
+          style={{
+            width: "100%",
+            background: canSave ? "var(--lime)" : "var(--card)",
+            border: canSave ? "none" : "1px solid var(--border)",
+            color: canSave ? "var(--black)" : "#444",
+            cursor: canSave ? "pointer" : "default",
+            opacity: canSave ? 1 : 0.6,
+          }}
+          onClick={canSave ? handleSave : undefined}
+        >
+          {canSave ? `SAVE "${name.trim().toUpperCase()}"` : exercises.length === 0 ? "ADD EXERCISES TO SAVE" : "NAME YOUR WORKOUT"}
+        </button>
       </div>
     </div>
   );
@@ -1312,10 +2015,6 @@ function WorkoutScreen({
               <div className="val">{formatDuration(workoutDuration)}</div>
               <div className="lbl">Duration</div>
             </div>
-            <div className="complete-stat">
-              <div className="val">{workoutPartial ? Math.round(workout.calories * totalSetsDone / totalSets) : workout.calories}</div>
-              <div className="lbl">Calories</div>
-            </div>
           </div>
           <button className="cta-btn pressable" style={{ width: "100%" }} onClick={onDone}>
             BACK TO HOME
@@ -1371,92 +2070,304 @@ function WorkoutScreen({
 
 // ─── PROGRESS SCREEN ─────────────────────────────────────────────────────────
 
-function ProgressScreen({ stats, chartPeriod, setChartPeriod, days, maxBar }) {
+function ProgressScreen({ workoutLog }) {
+  const now = new Date();
+  const weekAgo = new Date(now); weekAgo.setDate(weekAgo.getDate() - 7);
+  const monthAgo = new Date(now); monthAgo.setDate(monthAgo.getDate() - 30);
+
+  const thisWeekLog = workoutLog.filter(w => new Date(w.date) >= weekAgo);
+  const thisMonthLog = workoutLog.filter(w => new Date(w.date) >= monthAgo);
+
+  const totalSets = workoutLog.reduce((acc, w) =>
+    acc + w.exercises.reduce((a, e) => a + e.setsLogged, 0), 0);
+
+  const weeklySetsByMuscle = {};
+  ALL_MUSCLE_GROUPS.forEach(m => { weeklySetsByMuscle[m] = 0; });
+  thisWeekLog.forEach(w => {
+    w.exercises.forEach(e => {
+      const key = e.muscle in weeklySetsByMuscle ? e.muscle : "Other";
+      weeklySetsByMuscle[key] += e.setsLogged;
+    });
+  });
+
+  const setsByMuscle = ALL_MUSCLE_GROUPS
+    .map(group => ({
+      group,
+      sets: weeklySetsByMuscle[group] || 0,
+      upper: MUSCLE_META[group].upper,
+    }))
+    .filter(m => m.group !== "Other" && m.group !== "Cardio" || m.sets > 0)
+    .sort((a, b) => b.sets - a.sets);
+
+  const weeklyTotalSets = setsByMuscle.reduce((a, m) => a + m.sets, 0);
+  const maxSets = Math.max(...setsByMuscle.map(m => m.sets), 1);
+
+  const favMuscle = setsByMuscle[0] || null;
+  const weakestMuscle = [...setsByMuscle].filter(m => m.sets > 0).sort((a, b) => a.sets - b.sets)[0] || null;
+
+  const upperSets = setsByMuscle.filter(m => m.upper).reduce((a, m) => a + m.sets, 0);
+  const lowerSets = setsByMuscle.filter(m => !m.upper).reduce((a, m) => a + m.sets, 0);
+  const totalUL = upperSets + lowerSets;
+  const upperPct = totalUL > 0 ? Math.round((upperSets / totalUL) * 100) : 50;
+  const lowerPct = 100 - upperPct;
+
+  const dayMap = {};
+  thisMonthLog.forEach(w => {
+    const day = w.date.slice(0, 10);
+    const weights = w.exercises
+      .map(e => e.maxWeight)
+      .filter(w => w !== null && w > 0);
+    if (weights.length) {
+      if (!dayMap[day]) dayMap[day] = [];
+      dayMap[day].push(...weights);
+    }
+  });
+  const sortedDays = Object.keys(dayMap).sort();
+  const loadTrend = sortedDays.map(d => {
+    const vals = dayMap[d];
+    return Math.round(vals.reduce((a, b) => a + b, 0) / vals.length);
+  });
+
+  const liftHistory = {};
+  thisMonthLog.forEach(w => {
+    w.exercises.forEach(e => {
+      if (e.maxWeight === null || e.maxWeight === 0) return;
+      if (!liftHistory[e.name]) liftHistory[e.name] = [];
+      liftHistory[e.name].push({ date: w.date, weight: e.maxWeight });
+    });
+  });
+  const topLifts = Object.entries(liftHistory)
+    .map(([name, entries]) => {
+      if (entries.length < 2) return null;
+      const sorted = entries.sort((a, b) => a.date.localeCompare(b.date));
+      const before = sorted[0].weight;
+      const after = sorted[sorted.length - 1].weight;
+      const pct = ((after - before) / before) * 100;
+      return pct > 0 ? { name, before, after, pct: Math.round(pct * 10) / 10 } : null;
+    })
+    .filter(Boolean)
+    .sort((a, b) => b.pct - a.pct)
+    .slice(0, 3);
+
+  const loggedWorkoutsCount = workoutLog.length;
+
+  const loggedDays = new Set(workoutLog.map(w => w.date.slice(0, 10)));
+  let streak = 0;
+  const cursor = new Date(now);
+  const todayStr = cursor.toISOString().slice(0, 10);
+  if (!loggedDays.has(todayStr)) cursor.setDate(cursor.getDate() - 1);
+  while (true) {
+    const d = cursor.toISOString().slice(0, 10);
+    if (loggedDays.has(d)) { streak++; cursor.setDate(cursor.getDate() - 1); }
+    else break;
+  }
+
+  const sparkW = 280, sparkH = 56;
+  const hasLoadData = loadTrend.length >= 2;
+  const maxLoad = hasLoadData ? Math.max(...loadTrend) : 100;
+  const minLoad = hasLoadData ? Math.min(...loadTrend) : 0;
+  const loadRange = maxLoad - minLoad || 1;
+  const pts = loadTrend.map((v, i) => {
+    const x = loadTrend.length > 1 ? (i / (loadTrend.length - 1)) * sparkW : sparkW / 2;
+    const y = sparkH - ((v - minLoad) / loadRange) * (sparkH - 8) - 4;
+    return `${x.toFixed(1)},${y.toFixed(1)}`;
+  });
+  const sparkPath = hasLoadData ? "M " + pts.join(" L ") : "";
+  const areaPath = hasLoadData ? `M 0,${sparkH} L ${sparkPath.slice(2)} L ${sparkW},${sparkH} Z` : "";
+  const loadDelta = hasLoadData ? loadTrend[loadTrend.length - 1] - loadTrend[0] : 0;
+
+  const hasAnyData = workoutLog.length > 0;
+
   return (
     <div className="screen">
       <div className="scroll-area">
-        <div className="section-header" style={{ paddingTop: 14 }}>
-          <div className="section-title">PROGRESS</div>
-        </div>
-
-        <div className="stats-grid" style={{ margin: "0 24px" }}>
-          <div className="stats-cell">
-            <div className="val">{stats.totalWorkouts}</div>
-            <div className="lbl">Total Workouts</div>
-          </div>
-          <div className="stats-cell">
-            <div className="val">{stats.streak}<span className="unit">🔥</span></div>
-            <div className="lbl">Day Streak</div>
-          </div>
-          <div className="stats-cell">
-            <div className="val">{stats.weight}<span className="unit">kg</span></div>
-            <div className="lbl">Body Weight</div>
+        <div style={{ padding: "14px 24px 4px" }}>
+          <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 28, color: "var(--white)", letterSpacing: 1 }}>PROGRESS</div>
+          <div style={{ fontSize: 12, color: "var(--gray)", marginTop: 1 }}>
+            {hasAnyData ? `${loggedWorkoutsCount} workout${loggedWorkoutsCount !== 1 ? "s" : ""} logged` : "Complete a workout to see your stats"}
           </div>
         </div>
 
-        <div className="chart-section">
-          <div className="chart-header">
-            <div className="chart-title">WEEKLY VOLUME</div>
-            <div className="chart-tabs">
-              {["W", "M", "Y"].map(p => (
-                <button key={p} className={`chart-tab pressable ${chartPeriod === p ? "active" : ""}`} onClick={() => setChartPeriod(p)}>{p}</button>
-              ))}
-            </div>
+        <div className="stats-grid" style={{ margin: "10px 24px 0" }}>
+          <div className="stats-cell">
+            <div className="val">{loggedWorkoutsCount || "—"}</div>
+            <div className="lbl">Workouts</div>
           </div>
-          <div className="bar-chart">
-            {stats.weeklyVolume.map((v, i) => {
-              const h = Math.round((v / maxBar) * 68);
-              const isToday = i === 6;
-              return (
-                <div key={i} className="bar-col">
-                  <div className={`bar ${isToday ? "today" : "regular"}`} style={{ height: h }} />
-                  <div className={`bar-day ${isToday ? "today" : ""}`}>{days[i]}</div>
+          <div className="stats-cell">
+            <div className="val">{totalSets || "—"}</div>
+            <div className="lbl">Total Sets</div>
+          </div>
+          <div className="stats-cell">
+            <div className="val">{streak > 0 ? <>{streak}<span className="unit">🔥</span></> : "—"}</div>
+            <div className="lbl">Streak</div>
+          </div>
+        </div>
+
+        {!hasAnyData ? (
+          <div style={{ margin: "32px 24px", textAlign: "center" }}>
+            <div style={{ fontSize: 56, marginBottom: 14 }}>📊</div>
+            <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 24, color: "var(--white)", letterSpacing: 1, marginBottom: 6 }}>NO DATA YET</div>
+            <div style={{ fontSize: 14, color: "var(--gray)", lineHeight: 1.5 }}>Log your first workout and your progress analytics will appear here — sets by muscle, load trends, best lifts, and more.</div>
+          </div>
+        ) : (
+          <>
+            <div style={{ margin: "16px 24px 0", background: "var(--card)", border: "1px solid var(--border)", borderRadius: 18, padding: "14px 16px 12px", overflow: "hidden" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 12 }}>
+                <div>
+                  <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 18, color: "var(--white)", letterSpacing: 1 }}>LOAD TREND</div>
+                  <div style={{ fontSize: 11, color: "var(--gray)", marginTop: 1 }}>Avg max weight · 30 days</div>
                 </div>
-              );
-            })}
-          </div>
-        </div>
-
-        <div className="section-header" style={{ paddingTop: 16 }}>
-          <div className="section-title">THIS WEEK</div>
-        </div>
-
-        <div className="stats-row">
-          <div className="stat-card">
-            <div className="stat-icon">💪</div>
-            <div className="stat-val">{stats.workoutsThisWeek}<span className="stat-unit">/6</span></div>
-            <div className="stat-lbl">Workouts</div>
-          </div>
-          <div className="stat-card">
-            <div className="stat-icon">🔥</div>
-            <div className="stat-val">{(stats.caloriesThisWeek / 1000).toFixed(1)}<span className="stat-unit">k</span></div>
-            <div className="stat-lbl">Calories</div>
-          </div>
-          <div className="stat-card">
-            <div className="stat-icon">⏱</div>
-            <div className="stat-val">{stats.activeHoursThisWeek}<span className="stat-unit">h</span></div>
-            <div className="stat-lbl">Active</div>
-          </div>
-        </div>
-
-        <div className="section-header" style={{ paddingTop: 16 }}>
-          <div className="section-title">ACHIEVEMENTS</div>
-        </div>
-
-        <div className="ach-grid">
-          {ACHIEVEMENTS.map(a => (
-            <div key={a.id} className={`ach-badge pressable ${a.earned ? "earned" : ""}`}>
-              <div className="ach-icon" style={!a.earned ? { filter: "grayscale(1)", opacity: 0.35 } : {}}>{a.icon}</div>
-              <div className="ach-name" style={!a.earned ? { color: "#555" } : {}}>{a.name}</div>
-              <div className="ach-desc">{a.desc}</div>
-              {a.earned
-                ? <div className="ach-earned-tag">✓ EARNED</div>
-                : <div className="ach-locked-tag">🔒 LOCKED</div>
-              }
+                {hasLoadData ? (
+                  <div style={{ textAlign: "right" }}>
+                    <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 28, color: "var(--lime)", lineHeight: 1 }}>{loadTrend[loadTrend.length - 1]}kg</div>
+                    <div style={{ fontSize: 10, color: loadDelta >= 0 ? "var(--lime)" : "var(--red)", fontWeight: 700, marginTop: 1 }}>
+                      {loadDelta >= 0 ? "↑" : "↓"} {Math.abs(loadDelta)}kg vs first session
+                    </div>
+                  </div>
+                ) : (
+                  <div style={{ fontSize: 12, color: "var(--gray)" }}>Need 2+ sessions</div>
+                )}
+              </div>
+              {hasLoadData ? (
+                <>
+                  <svg width="100%" viewBox={`0 0 ${sparkW} ${sparkH}`} preserveAspectRatio="none" style={{ display: "block" }}>
+                    <defs>
+                      <linearGradient id="sparkGrad" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#C6F135" stopOpacity="0.25"/>
+                        <stop offset="100%" stopColor="#C6F135" stopOpacity="0"/>
+                      </linearGradient>
+                    </defs>
+                    <path d={areaPath} fill="url(#sparkGrad)"/>
+                    <path d={sparkPath} fill="none" stroke="#C6F135" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    <circle cx={pts[pts.length - 1].split(",")[0]} cy={pts[pts.length - 1].split(",")[1]} r="4" fill="#C6F135"/>
+                  </svg>
+                  <div style={{ display: "flex", justifyContent: "space-between", marginTop: 6 }}>
+                    <div style={{ fontSize: 9, color: "var(--gray)", letterSpacing: 0.5 }}>{sortedDays[0]}</div>
+                    <div style={{ fontSize: 9, color: "var(--gray)", letterSpacing: 0.5 }}>TODAY</div>
+                  </div>
+                </>
+              ) : (
+                <div style={{ height: 40, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <div style={{ fontSize: 12, color: "var(--gray)" }}>Log weighted exercises across multiple sessions to see your trend</div>
+                </div>
+              )}
             </div>
-          ))}
-        </div>
-        <div style={{ height: 16 }} />
+
+            <div style={{ margin: "14px 24px 0", background: "var(--card)", border: "1px solid var(--border)", borderRadius: 18, padding: "14px 16px" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 12 }}>
+                <div>
+                  <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 18, color: "var(--white)", letterSpacing: 1 }}>SETS BY MUSCLE</div>
+                  <div style={{ fontSize: 11, color: "var(--gray)", marginTop: 1 }}>This week</div>
+                </div>
+                <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 10, color: "var(--lime)" }}>{weeklyTotalSets} sets</div>
+              </div>
+              {weeklyTotalSets === 0 ? (
+                <div style={{ fontSize: 12, color: "var(--gray)", textAlign: "center", padding: "12px 0" }}>No workouts logged this week yet</div>
+              ) : setsByMuscle.map((m, i) => {
+                const pct = (m.sets / maxSets) * 100;
+                const isFav = favMuscle && m.group === favMuscle.group && m.sets > 0;
+                const isWeak = weakestMuscle && m.group === weakestMuscle.group && setsByMuscle.filter(x => x.sets > 0).length > 1;
+                return (
+                  <div key={m.group} style={{ marginBottom: i < setsByMuscle.length - 1 ? 10 : 0 }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                        <div style={{ fontSize: 12, fontWeight: 600, color: m.sets === 0 ? "#444" : isFav ? "var(--lime)" : isWeak ? "var(--orange)" : "var(--white)" }}>{m.group}</div>
+                        {isFav && m.sets > 0 && <div style={{ fontSize: 8, fontWeight: 700, color: "var(--lime)", background: "rgba(198,241,53,0.1)", border: "1px solid rgba(198,241,53,0.25)", borderRadius: 4, padding: "1px 5px" }}>FAV</div>}
+                        {isWeak && <div style={{ fontSize: 8, fontWeight: 700, color: "var(--orange)", background: "rgba(255,140,66,0.1)", border: "1px solid rgba(255,140,66,0.25)", borderRadius: 4, padding: "1px 5px" }}>LOW</div>}
+                      </div>
+                      <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 11, color: m.sets === 0 ? "#444" : "var(--gray)" }}>{m.sets}</div>
+                    </div>
+                    <div style={{ background: "rgba(255,255,255,0.06)", borderRadius: 4, height: 6, overflow: "hidden" }}>
+                      <div style={{ width: `${pct}%`, height: "100%", borderRadius: 4, background: m.sets === 0 ? "transparent" : isFav ? "var(--lime)" : isWeak ? "var(--orange)" : "rgba(198,241,53,0.45)", transition: "width 0.5s ease" }} />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {weeklyTotalSets > 0 && (
+              <div style={{ margin: "14px 24px 0", background: "var(--card)", border: "1px solid var(--border)", borderRadius: 18, padding: "14px 16px" }}>
+                <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 18, color: "var(--white)", letterSpacing: 1, marginBottom: 12 }}>UPPER / LOWER RATIO</div>
+                <div style={{ display: "flex", borderRadius: 10, overflow: "hidden", height: 28 }}>
+                  <div style={{ width: `${upperPct}%`, background: "var(--lime)", display: "flex", alignItems: "center", justifyContent: "center", minWidth: upperPct > 0 ? 32 : 0, transition: "width 0.4s" }}>
+                    {upperPct > 10 && <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 10, fontWeight: 700, color: "var(--black)" }}>{upperPct}%</span>}
+                  </div>
+                  <div style={{ flex: 1, background: "#7B9FFF", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    {lowerPct > 10 && <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 10, fontWeight: 700, color: "var(--black)" }}>{lowerPct}%</span>}
+                  </div>
+                </div>
+                <div style={{ display: "flex", justifyContent: "space-between", marginTop: 8 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                    <div style={{ width: 8, height: 8, borderRadius: 2, background: "var(--lime)" }} />
+                    <div style={{ fontSize: 11, color: "var(--gray)" }}>Upper · {upperSets} sets</div>
+                  </div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                    <div style={{ fontSize: 11, color: "var(--gray)" }}>Lower · {lowerSets} sets</div>
+                    <div style={{ width: 8, height: 8, borderRadius: 2, background: "#7B9FFF" }} />
+                  </div>
+                </div>
+                {upperPct > 70 && (
+                  <div style={{ marginTop: 10, padding: "8px 12px", background: "rgba(255,140,66,0.08)", border: "1px solid rgba(255,140,66,0.2)", borderRadius: 10, fontSize: 11, color: "var(--orange)" }}>
+                    ⚠️ Heavy upper body focus — consider adding more leg days
+                  </div>
+                )}
+              </div>
+            )}
+
+            {favMuscle && favMuscle.sets > 0 && (
+              <div style={{ margin: "14px 24px 0", background: "var(--card)", border: "1px solid var(--border)", borderRadius: 18, padding: "14px 16px", display: "flex", alignItems: "center", gap: 14 }}>
+                <div style={{ width: 52, height: 52, borderRadius: 14, background: "rgba(198,241,53,0.1)", border: "1px solid rgba(198,241,53,0.2)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 26, flexShrink: 0 }}>⭐</div>
+                <div>
+                  <div style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: 2, color: "var(--lime)", fontWeight: 700, marginBottom: 2 }}>Favourite This Week</div>
+                  <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 24, color: "var(--white)", letterSpacing: 0.5, lineHeight: 1 }}>{favMuscle.group}</div>
+                  <div style={{ fontSize: 11, color: "var(--gray)", marginTop: 3 }}>{favMuscle.sets} sets · {weeklyTotalSets > 0 ? Math.round((favMuscle.sets / weeklyTotalSets) * 100) : 0}% of weekly volume</div>
+                </div>
+              </div>
+            )}
+
+            {weakestMuscle && setsByMuscle.filter(m => m.sets > 0).length > 1 && (
+              <div style={{ margin: "10px 24px 0", background: "var(--card)", border: "1px solid rgba(255,140,66,0.2)", borderRadius: 18, padding: "14px 16px", display: "flex", alignItems: "center", gap: 14 }}>
+                <div style={{ width: 52, height: 52, borderRadius: 14, background: "rgba(255,140,66,0.08)", border: "1px solid rgba(255,140,66,0.2)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 26, flexShrink: 0 }}>⚠️</div>
+                <div>
+                  <div style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: 2, color: "var(--orange)", fontWeight: 700, marginBottom: 2 }}>Needs Attention</div>
+                  <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 24, color: "var(--white)", letterSpacing: 0.5, lineHeight: 1 }}>{weakestMuscle.group}</div>
+                  <div style={{ fontSize: 11, color: "var(--gray)", marginTop: 3 }}>Only {weakestMuscle.sets} set{weakestMuscle.sets !== 1 ? "s" : ""} this week — lowest volume group</div>
+                </div>
+              </div>
+            )}
+
+            {topLifts.length > 0 && (
+              <div style={{ margin: "14px 24px 0" }}>
+                <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 18, color: "var(--white)", letterSpacing: 1, marginBottom: 10 }}>BEST IMPROVED LIFTS</div>
+                {topLifts.map((lift, i) => (
+                  <div key={lift.name} style={{ background: "var(--card)", border: "1px solid var(--border)", borderRadius: 14, padding: "12px 14px", marginBottom: 8, display: "flex", alignItems: "center", gap: 12 }}>
+                    <div style={{ width: 28, height: 28, borderRadius: 8, background: i === 0 ? "rgba(198,241,53,0.12)" : "var(--surface)", border: `1px solid ${i === 0 ? "rgba(198,241,53,0.3)" : "var(--border)"}`, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Bebas Neue', sans-serif", fontSize: 14, color: i === 0 ? "var(--lime)" : "var(--gray)", flexShrink: 0 }}>
+                      {i + 1}
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontSize: 13, fontWeight: 600, color: "var(--white)", marginBottom: 2 }}>{lift.name}</div>
+                      <div style={{ fontSize: 11, color: "var(--gray)" }}>
+                        {lift.before}kg → <span style={{ color: "var(--lime)", fontWeight: 700 }}>{lift.after}kg</span>
+                      </div>
+                    </div>
+                    <div style={{ textAlign: "right" }}>
+                      <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 22, color: "var(--lime)", lineHeight: 1 }}>+{lift.pct}%</div>
+                      <div style={{ fontSize: 9, color: "var(--gray)", letterSpacing: 0.5, marginTop: 1 }}>30 DAYS</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+            {topLifts.length === 0 && (
+              <div style={{ margin: "14px 24px 0", background: "var(--card)", border: "1px solid var(--border)", borderRadius: 18, padding: "16px", textAlign: "center" }}>
+                <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 16, color: "var(--white)", letterSpacing: 1, marginBottom: 4 }}>BEST IMPROVED LIFTS</div>
+                <div style={{ fontSize: 12, color: "var(--gray)" }}>Log the same weighted exercise across multiple sessions to track improvements</div>
+              </div>
+            )}
+          </>
+        )}
+
+        <div style={{ height: 20 }} />
       </div>
     </div>
   );
