@@ -2455,3 +2455,10 @@ function ProfileScreen({ stats }) {
 // Mount the app
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(<ForgeApp />);
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then(reg => console.log('SW Registered!', reg))
+      .catch(err => console.log('SW Failed', err));
+  });
+}
