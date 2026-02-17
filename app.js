@@ -1144,7 +1144,7 @@ function ForgeApp() {
       <style>{css}</style>
       <div className="app-shell">
         <div className="phone">
-          <div className="status-bar">
+          /*<div className="status-bar">
             <span>{clock.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: false })}</span>
             <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
               <svg width="16" height="12" viewBox="0 0 16 12" fill="#F0F0F0">
@@ -1159,7 +1159,7 @@ function ForgeApp() {
                 <rect x="1.5" y="1.5" width="15" height="9" rx="1.5" fill="#F0F0F0"/>
               </svg>
             </div>
-          </div>
+          </div>*/
 
           {tab === "home" && <HomeScreen stats={stats} onStartWorkout={startWorkout} onNavigate={setTab} />}
           {tab === "explore" && <ExploreScreen workouts={filteredWorkouts} categories={categories} filterCategory={filterCategory} setFilterCategory={setFilterCategory} onStartWorkout={startWorkout} onCreateWorkout={() => setTab("create")} />}
@@ -2462,3 +2462,4 @@ if ('serviceWorker' in navigator) {
       .catch(err => console.log('SW Failed', err));
   });
 }
+
