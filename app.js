@@ -1843,7 +1843,7 @@ useEffect(() => {
 
 function HomeScreen({ stats, profile, onStartWorkout, onNavigate }) {
   const todayWorkout = WORKOUTS[0];
-  const initials = profile.name ? profile.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) : 'M';
+  const initials = profile.name ? profile.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) : '?';
   const displayName = profile.name ? profile.name.split(' ')[0].toUpperCase() : 'CHAMPION';
   const [affirmation] = useState(() => AFFIRMATIONS[Math.floor(Math.random() * AFFIRMATIONS.length)]);
 
@@ -3072,11 +3072,25 @@ function ProfileScreen({ stats, profile, updateProfile }) {
     <div className="screen">
       <div className="scroll-area">
         <div className="profile-hero">
-          <div className="profile-avatar-ring" style={{ background: `conic-gradient(#C6F135 0deg 240deg, #2A2A2A 240deg 360deg)` }}>
-            <div className="profile-avatar-inner">{initials}</div>
-          </div>
+          {(() => {
+            const WEEKLY_GOAL = 5;
+            const progress = Math.min(workoutsThisWeek / WEEKLY_GOAL, 1);
+            const fillDeg = Math.round(progress * 360);
+            const ringBg = fillDeg > 0
+              ? `conic-gradient(#C6F135 0deg ${fillDeg}deg, #2A2A2A ${fillDeg}deg 360deg)`
+              : '#2A2A2A';
+            return (
+              <div className="profile-avatar-ring" style={{ background: ringBg }}>
+                <div className="profile-avatar-inner">{initials}</div>
+              </div>
+            );
+          })()}
           <div className="profile-name">{profile.name || 'SET YOUR NAME'}</div>
           <div className="profile-handle">Member since {memberSince}</div>
+          <div style={{ fontSize: 11, color: 'var(--gray)', marginTop: 4 }}>
+            <span style={{ color: 'var(--lime)', fontWeight: 700 }}>{workoutsThisWeek}</span>
+            <span> / 5 workouts this week</span>
+          </div>
         </div>
 
         <div className="stats-grid">
