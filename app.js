@@ -1579,7 +1579,23 @@ function buildSetDone(workout) {
   });
   return done;
 }
+function loadStats() {
+  const saved = localStorage.getItem('forgeStats');
+  return saved ? JSON.parse(saved) : INITIAL_STATS;
+}
 
+function saveStats(stats) {
+  localStorage.setItem('forgeStats', JSON.stringify(stats));
+}
+
+function loadAchievements() {
+  const saved = localStorage.getItem('forgeAchievements');
+  return saved ? JSON.parse(saved) : ACHIEVEMENTS;
+}
+
+function saveAchievements(ach) {
+  localStorage.setItem('forgeAchievements', JSON.stringify(ach));
+}
 // ─── MAIN APP ─────────────────────────────────────────────────────────────────
 
 function ForgeApp() {
@@ -1595,7 +1611,13 @@ function ForgeApp() {
   const [showComplete, setShowComplete] = useState(false);
   const [workoutPartial, setWorkoutPartial] = useState(false);
   const [workoutDuration, setWorkoutDuration] = useState(0);
-  const [stats, setStats] = useState(() => loadWorkoutStats());
+  // Inside ForgeApp component
+const [stats, setStats] = useState(() => loadStats());
+const [achievements, setAchievements] = useState(() => loadAchievements());
+
+// Add these Effects to auto-save changes
+useEffect(() => saveStats(stats), [stats]);
+useEffect(() => saveAchievements(achievements), [achievements]);
   const [workoutLog, setWorkoutLog] = useState([]);
   const [filterCategory, setFilterCategory] = useState("All");
   const [customWorkouts, setCustomWorkouts] = useState([]);
@@ -1607,31 +1629,50 @@ function ForgeApp() {
     saveProfile(newProfile);
   };
 
-const handleFinish = (workoutTime) => {
-  // 1. Calculate the actual hours spent (convert seconds to hours)
-  const sessionHours = workoutTime / 3600;
+const handleFinish = (workoutTimeSeconds) => {
+  const now = new Date();
+  const hours = now.getHours();
+  const workoutTimeHours = workoutTimeSeconds / 3600;
 
-  // 2. Calculate volume for the current workout
-  // (Assuming you've tracked weights in your workout state)
-  const sessionVolume = activeWorkout.exercises.reduce((total, ex) => {
-    // Basic calculation: sets * reps * weight (if weight is a number)
-    const weightVal = parseInt(ex.weight) || 0;
-    return total + (ex.sets * ex.reps * weightVal);
+  // Calculate Volume (kg)
+  const sessionVolume = activeWorkout.exercises.reduce((acc, ex) => {
+    const weight = parseInt(ex.weight) || 0;
+    return acc + (ex.sets * ex.reps * weight);
   }, 0);
 
-  setStats(prev => ({
-    ...prev,
-    totalWorkouts: prev.totalWorkouts + 1,
-    workoutsThisWeek: prev.workoutsThisWeek + 1,
-    // Fix for Home Screen: Add the session hours to the total
-    activeHoursThisWeek: prev.activeHoursThisWeek + sessionHours,
-    // Fix for Progress Screen: Add the volume to the weekly array
-    weeklyVolume: [...prev.weeklyVolume, sessionVolume],
-    streak: prev.streak + 1
+  // 1. Update Stats
+  const newStats = {
+    ...stats,
+    totalWorkouts: stats.totalWorkouts + 1,
+    workoutsThisWeek: stats.workoutsThisWeek + 1,
+    activeHoursThisWeek: stats.activeHoursThisWeek + workoutTimeHours,
+    weeklyVolume: [...stats.weeklyVolume, sessionVolume],
+    streak: stats.streak + 1
+  };
+  setStats(newStats);
+
+  // 2. Update All 6 Achievements
+  setAchievements(prev => prev.map(ach => {
+    if (ach.earned) return ach;
+    
+    let isEarned = false;
+    switch(ach.id) {
+      case 1: isEarned = newStats.totalWorkouts >= 100; break; // Century Club
+      case 2: isEarned = newStats.totalWorkouts >= 1; break;   // Strong Start
+      case 3: isEarned = newStats.totalWorkouts >= 250; break; // Diamond Lifter
+      case 4: isEarned = newStats.workoutsThisWeek >= 5; break; // Speed Demon
+      case 5: // Iron Lion (10k kg total)
+        const totalVol = newStats.weeklyVolume.reduce((a, b) => a + b, 0);
+        isEarned = totalVol >= 10000; 
+        break;
+      case 6: isEarned = hours >= 22 || hours < 4; break;      // Night Owl
+    }
+    
+    return isEarned ? { ...ach, earned: true } : ach;
   }));
 
-  setActiveWorkout(null);
   setScreen('home');
+  setActiveWorkout(null);
 };
 
   
