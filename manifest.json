@@ -8,6 +8,7 @@
   "theme_color": "#0A0A0A",
   "orientation": "portrait",
   "scope": "./",
+  "id": "./index.html",
   "icons": [
     {
       "src": "icons/icon-72x72.png",
@@ -71,6 +72,7 @@
   "lang": "en"
 
 }
+
 
 
 
