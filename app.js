@@ -1606,35 +1606,6 @@ function ForgeApp() {
     setProfile(newProfile);
     saveProfile(newProfile);
   };
-
-const handleFinish = (workoutTime) => {
-  // 1. Calculate the actual hours spent (convert seconds to hours)
-  const sessionHours = workoutTime / 3600;
-
-  // 2. Calculate volume for the current workout
-  // (Assuming you've tracked weights in your workout state)
-  const sessionVolume = activeWorkout.exercises.reduce((total, ex) => {
-    // Basic calculation: sets * reps * weight (if weight is a number)
-    const weightVal = parseInt(ex.weight) || 0;
-    return total + (ex.sets * ex.reps * weightVal);
-  }, 0);
-
-  setStats(prev => ({
-    ...prev,
-    totalWorkouts: prev.totalWorkouts + 1,
-    workoutsThisWeek: prev.workoutsThisWeek + 1,
-    // Fix for Home Screen: Add the session hours to the total
-    activeHoursThisWeek: prev.activeHoursThisWeek + sessionHours,
-    // Fix for Progress Screen: Add the volume to the weekly array
-    weeklyVolume: [...prev.weeklyVolume, sessionVolume],
-    streak: prev.streak + 1
-  }));
-
-  setActiveWorkout(null);
-  setScreen('home');
-};
-
-  
 // Add this inside your ForgeApp component
 useEffect(() => {
   saveWorkoutStats(stats);
@@ -3053,14 +3024,10 @@ function ProfileScreen({ stats, profile, updateProfile }) {
             <div className="val">{stats.totalWorkouts}</div>
             <div className="lbl">Workouts</div>
           </div>
-         <div className="stats-cell">
-  <div className="val">
-    {/* Sum up all volume entries in the array */}
-    {stats.weeklyVolume.reduce((a, b) => a + b, 0).toLocaleString()}
-    <span className="unit">kg</span>
-  </div>
-  <div className="lbl">Weekly Volume</div>
-</div>
+          <div className="stats-cell">
+            <div className="val">{totalVolumeThisWeek}<span className="unit">t</span></div>
+            <div className="lbl">Week Volume</div>
+          </div>
           <div className="stats-cell">
             <div className="val">{profile.weight}<span className="unit">kg</span></div>
             <div className="lbl">Body Weight</div>
@@ -3225,7 +3192,7 @@ function ProfileScreen({ stats, profile, updateProfile }) {
       )}
     </div>
   );
-}d
+}
 
 
 // Mount the app
