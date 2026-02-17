@@ -122,7 +122,15 @@ function loadProfile() {
 function saveProfile(profile) {
   localStorage.setItem('forgeProfile', JSON.stringify(profile));
 }
+// Add these next to your loadProfile / saveProfile functions
+function loadWorkoutStats() {
+  const saved = localStorage.getItem('forgeStats');
+  return saved ? JSON.parse(saved) : INITIAL_STATS;
+}
 
+function saveWorkoutStats(stats) {
+  localStorage.setItem('forgeStats', JSON.stringify(stats));
+}
 const ACHIEVEMENTS = [
   { id: 1, icon: "🏆", name: "Century Club", desc: "Complete 100 workouts", earned: false },
   { id: 2, icon: "💪", name: "Strong Start", desc: "First workout completed", earned: false },
@@ -1587,7 +1595,7 @@ function ForgeApp() {
   const [showComplete, setShowComplete] = useState(false);
   const [workoutPartial, setWorkoutPartial] = useState(false);
   const [workoutDuration, setWorkoutDuration] = useState(0);
-  const [stats, setStats] = useState(INITIAL_STATS);
+  const [stats, setStats] = useState(() => loadWorkoutStats());
   const [workoutLog, setWorkoutLog] = useState([]);
   const [filterCategory, setFilterCategory] = useState("All");
   const [customWorkouts, setCustomWorkouts] = useState([]);
@@ -1598,7 +1606,10 @@ function ForgeApp() {
     setProfile(newProfile);
     saveProfile(newProfile);
   };
-
+// Add this inside your ForgeApp component
+useEffect(() => {
+  saveWorkoutStats(stats);
+}, [stats]);
   const timerRef = useRef(null);
   const durationRef = useRef(null);
 
