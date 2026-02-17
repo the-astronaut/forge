@@ -124,8 +124,8 @@ function saveProfile(profile) {
 }
 
 const ACHIEVEMENTS = [
-  { id: 1, icon: "🏆", name: "Century Club", desc: "Complete 100 workouts", earned: true },
-  { id: 2, icon: "🔥", name: "On Fire", desc: "14-day streak", earned: true },
+  { id: 1, icon: "🏆", name: "Century Club", desc: "Complete 100 workouts", earned: false },
+  { id: 2, icon: "💪", name: "Strong Start", desc: "First workout completed", earned: false },
   { id: 3, icon: "💎", name: "Diamond Lifter", desc: "250 total workouts", earned: false },
   { id: 4, icon: "⚡", name: "Speed Demon", desc: "5 workouts in a week", earned: false },
   { id: 5, icon: "🦁", name: "Iron Lion", desc: "Lift 10,000kg total", earned: false },
@@ -1816,6 +1816,15 @@ function HomeScreen({ stats, profile, onStartWorkout, onNavigate }) {
   const initials = profile.name ? profile.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) : 'M';
   const displayName = profile.name ? profile.name.split(' ')[0].toUpperCase() : 'CHAMPION';
   
+  // Format active hours as "Xh Ym" or just "Xh" or just "Ym"
+  const formatActiveTime = (hours) => {
+    const h = Math.floor(hours);
+    const m = Math.round((hours - h) * 60);
+    if (h > 0 && m > 0) return `${h}h ${m}m`;
+    if (h > 0) return `${h}h`;
+    return `${m}m`;
+  };
+  
   return (
     <div className="screen">
       <div className="scroll-area">
@@ -1864,12 +1873,12 @@ function HomeScreen({ stats, profile, onStartWorkout, onNavigate }) {
         <div className="stats-row">
           <div className="stat-card">
             <div className="stat-icon">💪</div>
-            <div className="stat-val">{stats.workoutsThisWeek}<span className="stat-unit"> /6</span></div>
+            <div className="stat-val">{stats.workoutsThisWeek}</div>
             <div className="stat-lbl">Workouts</div>
           </div>
           <div className="stat-card">
             <div className="stat-icon">⏱</div>
-            <div className="stat-val">{stats.activeHoursThisWeek}<span className="stat-unit">h</span></div>
+            <div className="stat-val">{formatActiveTime(stats.activeHoursThisWeek)}</div>
             <div className="stat-lbl">Active</div>
           </div>
         </div>
