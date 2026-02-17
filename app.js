@@ -1,17 +1,95 @@
 const { useState, useEffect, useRef, useCallback, useMemo } = React;
 
 // ─── DATA ───────────────────────────────────────────────────────────────────
-// (Keeping your WORKOUTS and INITIAL_STATS as defined in the source)
+
+const WORKOUTS = [
+  {
+    id: 1,
+    name: "UPPER BODY POWER",
+    category: "Push Day",
+    emoji: "🏋️",
+    duration: 52,
+    difficulty: "Advanced",
+    color: "#C6F135",
+    bg: "linear-gradient(160deg, #1a2a0a, #2d4a10)",
+    exercises: [
+      { id: 1, name: "Warm-up Push-ups",      muscle: "Chest",     sets: 2, reps: 15, rest: 30,  weight: "BW"  },
+      { id: 2, name: "Incline Dumbbell Press", muscle: "Chest",     sets: 3, reps: 10, rest: 60,  weight: "30kg"},
+      { id: 3, name: "Bench Press",            muscle: "Chest",     sets: 4, reps: 8,  rest: 90,  weight: "80kg"},
+      { id: 4, name: "Cable Fly",              muscle: "Chest",     sets: 3, reps: 12, rest: 60,  weight: "35kg"},
+      { id: 5, name: "Tricep Pushdown",        muscle: "Triceps",   sets: 3, reps: 15, rest: 45,  weight: "25kg"},
+      { id: 6, name: "Overhead Press",         muscle: "Shoulders", sets: 4, reps: 6,  rest: 90,  weight: "60kg"},
+      { id: 7, name: "Lateral Raises",         muscle: "Shoulders", sets: 3, reps: 15, rest: 45,  weight: "12kg"},
+      { id: 8, name: "Cooldown Stretch",       muscle: "Other",     sets: 1, reps: 1,  rest: 0,   weight: "—"  },
+    ],
+  },
+  {
+    id: 2,
+    name: "LEG DESTROYER",
+    category: "Leg Day",
+    emoji: "🦵",
+    duration: 55,
+    difficulty: "Advanced",
+    color: "#C6F135",
+    bg: "linear-gradient(160deg, #1a2a0a, #0a1a0a)",
+    exercises: [
+      { id: 1, name: "Squat Warm-up",      muscle: "Legs", sets: 2, reps: 20, rest: 30,  weight: "BW"   },
+      { id: 2, name: "Back Squat",         muscle: "Legs", sets: 5, reps: 5,  rest: 120, weight: "100kg"},
+      { id: 3, name: "Romanian Deadlift",  muscle: "Legs", sets: 4, reps: 8,  rest: 90,  weight: "80kg" },
+      { id: 4, name: "Leg Press",          muscle: "Legs", sets: 3, reps: 12, rest: 60,  weight: "140kg"},
+      { id: 5, name: "Walking Lunges",     muscle: "Legs", sets: 3, reps: 16, rest: 60,  weight: "20kg" },
+      { id: 6, name: "Leg Curl",           muscle: "Legs", sets: 3, reps: 12, rest: 45,  weight: "40kg" },
+    ],
+  },
+  {
+      id: 3,
+      name: "DEEP STRETCH",
+      category: "Recovery",
+      emoji: "🧘",
+      duration: 20,
+      difficulty: "All Levels",
+      color: "#7B9FFF",
+      bg: "linear-gradient(160deg, #1a1a2a, #101030)",
+      exercises: [
+        { id: 1, name: "Hip Flexor", muscle: "Other", sets: 1, reps: 1, rest: 60, weight: "—" },
+        { id: 2, name: "Hamstring",  muscle: "Legs",  sets: 1, reps: 1, rest: 60, weight: "—" },
+        { id: 3, name: "Pigeon Pose", muscle: "Other", sets: 1, reps: 1, rest: 90, weight: "—" },
+      ],
+    },
+    {
+      id: 4,
+      name: "BURN & BUILD",
+      category: "HIIT",
+      emoji: "⚡",
+      duration: 30,
+      difficulty: "Intermediate",
+      color: "#FF8C42",
+      bg: "linear-gradient(160deg, #2a1a0a, #3d1000)",
+      exercises: [
+        { id: 1, name: "Burpees",   muscle: "Cardio", sets: 4, reps: 10, rest: 30, weight: "BW"  },
+        { id: 2, name: "Box Jumps", muscle: "Cardio", sets: 4, reps: 8,  rest: 45, weight: "BW"  },
+      ],
+    }
+];
+
 const INITIAL_STATS = {
   streak: 0,
   workoutsThisWeek: 0,
   totalWorkouts: 0,
   activeHoursThisWeek: 0,
-  weight: 0,
-  weeklyVolume: [], // Stores volume per session
+  weight: 75,
+  weeklyVolume: [],
 };
 
-const ACHIEVEMENTS = [
+const DEFAULT_PROFILE = {
+  name: "User",
+  height: 180,
+  weight: 75,
+  measurements: { chest: 100, waist: 80, biceps: 38, thighs: 58 },
+  joinDate: new Date().toISOString(),
+};
+
+const ACHIEVEMENTS_DATA = [
   { id: 1, icon: "🏆", name: "Century Club", desc: "Complete 100 workouts", earned: false },
   { id: 2, icon: "💪", name: "Strong Start", desc: "First workout completed", earned: false },
   { id: 3, icon: "💎", name: "Diamond Lifter", desc: "250 total workouts", earned: false },
@@ -20,64 +98,44 @@ const ACHIEVEMENTS = [
   { id: 6, icon: "🌙", name: "Night Owl", desc: "Workout after 10pm", earned: false },
 ];
 
-// ─── LOCAL STORAGE HELPERS ──────────────────────────────────────────────────
+// ─── HELPERS ────────────────────────────────────────────────────────────────
 
-function loadProfile() {
-  const saved = localStorage.getItem('forgeProfile');
-  return saved ? JSON.parse(saved) : DEFAULT_PROFILE;
-}
+const storage = {
+  save: (key, val) => localStorage.setItem(key, JSON.stringify(val)),
+  load: (key, fallback) => {
+    const saved = localStorage.getItem(key);
+    return saved ? JSON.parse(saved) : fallback;
+  }
+};
 
-function saveProfile(profile) {
-  localStorage.setItem('forgeProfile', JSON.stringify(profile));
-}
-
-function loadWorkoutStats() {
-  const saved = localStorage.getItem('forgeStats');
-  return saved ? JSON.parse(saved) : INITIAL_STATS;
-}
-
-function saveWorkoutStats(stats) {
-  localStorage.setItem('forgeStats', JSON.stringify(stats));
-}
-
-function loadAchievements() {
-  const saved = localStorage.getItem('forgeAchievements');
-  return saved ? JSON.parse(saved) : ACHIEVEMENTS;
-}
-
-function saveAchievements(ach) {
-  localStorage.setItem('forgeAchievements', JSON.stringify(ach));
-}
-
-// ─── MAIN COMPONENT ─────────────────────────────────────────────────────────
+// ─── MAIN APP ───────────────────────────────────────────────────────────────
 
 function ForgeApp() {
   const [screen, setScreen] = useState('home');
-  const [profile, setProfile] = useState(() => loadProfile());
-  const [stats, setStats] = useState(() => loadWorkoutStats());
-  const [achievements, setAchievements] = useState(() => loadAchievements());
+  const [profile, setProfile] = useState(() => storage.load('forgeProfile', DEFAULT_PROFILE));
+  const [stats, setStats] = useState(() => storage.load('forgeStats', INITIAL_STATS));
+  const [achievements, setAchievements] = useState(() => storage.load('forgeAchievements', ACHIEVEMENTS_DATA));
   const [activeWorkout, setActiveWorkout] = useState(null);
 
-  // Persistence Effects: Saves data automatically when state changes
-  useEffect(() => saveProfile(profile), [profile]);
-  useEffect(() => saveWorkoutStats(stats), [stats]);
-  useEffect(() => saveAchievements(achievements), [achievements]);
+  // Auto-save whenever data changes
+  useEffect(() => storage.save('forgeProfile', profile), [profile]);
+  useEffect(() => storage.save('forgeStats', stats), [stats]);
+  useEffect(() => storage.save('forgeAchievements', achievements), [achievements]);
 
   const handleFinishWorkout = (timeInSeconds) => {
     const hoursSpent = timeInSeconds / 3600;
-    const now = new Date();
-    const hourOfFinish = now.getHours();
+    const hourOfFinish = new Date().getHours();
 
-    // Fix: Calculate volume by removing "kg" from weight strings
-    const sessionVolume = activeWorkout.exercises.reduce((total, ex) => {
-      const weightNum = (typeof ex.weight === 'string') 
+    // Calculate Volume (kg)
+    const sessionVolume = activeWorkout.exercises.reduce((acc, ex) => {
+      const weight = (typeof ex.weight === 'string') 
         ? parseInt(ex.weight.replace(/[^0-9]/g, '')) || 0 
         : ex.weight || 0;
-      return total + (ex.sets * ex.reps * weightNum);
+      return acc + (ex.sets * ex.reps * weight);
     }, 0);
 
     // Update Stats
-    const updatedStats = {
+    const newStats = {
       ...stats,
       totalWorkouts: stats.totalWorkouts + 1,
       workoutsThisWeek: stats.workoutsThisWeek + 1,
@@ -85,58 +143,37 @@ function ForgeApp() {
       weeklyVolume: [...(stats.weeklyVolume || []), sessionVolume],
       streak: stats.streak + 1
     };
-    setStats(updatedStats);
+    setStats(newStats);
 
-    // Fix: Update all 6 achievements
+    // Update Achievements
     setAchievements(prev => prev.map(ach => {
       if (ach.earned) return ach;
-      
-      let isEarned = false;
-      const totalVolumeToDate = updatedStats.weeklyVolume.reduce((a, b) => a + b, 0);
+      let earned = false;
+      const totalVol = newStats.weeklyVolume.reduce((a, b) => a + b, 0);
 
-      switch(ach.id) {
-        case 1: isEarned = updatedStats.totalWorkouts >= 100; break; 
-        case 2: isEarned = updatedStats.totalWorkouts >= 1; break;   
-        case 3: isEarned = updatedStats.totalWorkouts >= 250; break; 
-        case 4: isEarned = updatedStats.workoutsThisWeek >= 5; break; 
-        case 5: isEarned = totalVolumeToDate >= 10000; break;        
-        case 6: isEarned = (hourOfFinish >= 22 || hourOfFinish < 4); break; 
-      }
-      return isEarned ? { ...ach, earned: true } : ach;
+      if (ach.id === 1) earned = newStats.totalWorkouts >= 100;
+      if (ach.id === 2) earned = newStats.totalWorkouts >= 1;
+      if (ach.id === 3) earned = newStats.totalWorkouts >= 250;
+      if (ach.id === 4) earned = newStats.workoutsThisWeek >= 5;
+      if (ach.id === 5) earned = totalVol >= 10000;
+      if (ach.id === 6) earned = (hourOfFinish >= 22 || hourOfFinish < 4);
+
+      return earned ? { ...ach, earned: true } : ach;
     }));
 
-    setScreen('home');
     setActiveWorkout(null);
+    setScreen('home');
   };
 
-  // Rendering logic for Profile Screen
-  const ProfileScreen = () => {
-    const totalVolume = stats.weeklyVolume.reduce((a, b) => a + b, 0);
-    
-    return (
-      <div className="screen">
-        {/* ... Profile Hero ... */}
-        <div className="stats-grid">
-          <div className="stats-cell">
-            <div className="val">{updatedStats.totalWorkouts}</div>
-            <div className="lbl">Workouts</div>
-          </div>
-          <div className="stats-cell">
-            <div className="val">
-              {Math.round(totalVolume).toLocaleString()}
-              <span className="unit">kg</span>
-            </div>
-            <div className="lbl">Weekly Volume</div>
-          </div>
-          <div className="stats-cell">
-             <div className="val">{stats.streak}</div>
-             <div className="lbl">Day Streak</div>
-          </div>
-        </div>
-        {/* ... Rest of Screen ... */}
-      </div>
-    );
-  };
-
-  // ... rest of your UI code ...
+  // Screen Logic simplified for readability
+  return (
+    <div className="app-container">
+      {/* Your UI Components here, passing stats and profile as props */}
+      {screen === 'home' && <div>Welcome {profile.name}! Workouts: {stats.totalWorkouts}</div>}
+      {/* Add your existing Nav and Screen components here */}
+    </div>
+  );
 }
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<ForgeApp />);
