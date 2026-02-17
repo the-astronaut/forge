@@ -28,7 +28,21 @@
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
   
   <!-- Babel for JSX -->
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+ <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+<script type="text/babel" data-presets="react" src="app.js"></script>
+
+<script type="text/babel" data-presets="react">
+  // Move your SW registration here so Babel handles it, 
+  // or keep it in a standard <script> but ensure it doesn't conflict.
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js')
+        .then(reg => console.log('SW Registered', reg.scope))
+        .catch(err => console.log('SW Failed', err));
+    });
+  }
+</script>
   
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600&family=Space+Mono:wght@400;700&display=swap');
@@ -132,19 +146,7 @@
   <script type="text/babel" src="app.js"></script>
   
   <script>
-    // Register Service Worker
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js')
-          .then(registration => {
-            console.log('SW registered:', registration.scope);
-          })
-          .catch(error => {
-            console.log('SW registration failed:', error);
-          });
-      });
-    }
-    
+     
     // Hide loading screen when app mounts
     window.addEventListener('load', () => {
       setTimeout(() => {
