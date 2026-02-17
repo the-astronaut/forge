@@ -60,7 +60,7 @@
   ],
   "screenshots": [
     {
-      "src": "screenshots/screen1.png",
+      "src": "icons/screen1.png",
       "sizes": "390x844",
       "type": "image/png",
       "form_factor": "narrow"
@@ -68,4 +68,5 @@
   ],
   "categories": ["health", "fitness", "lifestyle"],
   "lang": "en"
+
 }
