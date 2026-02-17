@@ -1144,23 +1144,6 @@ function ForgeApp() {
       <style>{css}</style>
       <div className="app-shell">
         <div className="phone">
-          /*<div className="status-bar">
-            <span>{clock.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: false })}</span>
-            <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
-              <svg width="16" height="12" viewBox="0 0 16 12" fill="#F0F0F0">
-                <rect x="0" y="4" width="3" height="8" rx="0.5"/>
-                <rect x="4" y="2.5" width="3" height="9.5" rx="0.5"/>
-                <rect x="8" y="1" width="3" height="11" rx="0.5"/>
-                <rect x="12" y="0" width="3" height="12" rx="0.5"/>
-              </svg>
-              <svg width="24" height="12" viewBox="0 0 24 12" fill="none">
-                <rect x="0.5" y="0.5" width="19" height="11" rx="2" stroke="#F0F0F0" strokeOpacity="0.4"/>
-                <rect x="20" y="3.5" width="3" height="5" rx="1" fill="#F0F0F0" fillOpacity="0.4"/>
-                <rect x="1.5" y="1.5" width="15" height="9" rx="1.5" fill="#F0F0F0"/>
-              </svg>
-            </div>
-          </div>*/
-
           {tab === "home" && <HomeScreen stats={stats} onStartWorkout={startWorkout} onNavigate={setTab} />}
           {tab === "explore" && <ExploreScreen workouts={filteredWorkouts} categories={categories} filterCategory={filterCategory} setFilterCategory={setFilterCategory} onStartWorkout={startWorkout} onCreateWorkout={() => setTab("create")} />}
           {tab === "create" && (
@@ -2462,4 +2445,5 @@ if ('serviceWorker' in navigator) {
       .catch(err => console.log('SW Failed', err));
   });
 }
+
 
