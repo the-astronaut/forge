@@ -1,10 +1,18 @@
 const CACHE_NAME = 'forge-v1';
 const STATIC_ASSETS = [
-  '/',
-  '/index.html',
-  '/app.js',
-  '/manifest.json',
-  'https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600&family=Space+Mono:wght@400;700&display=swap'
+  './',
+  './index.html',
+  './app.js',
+  './manifest.json',
+  // Add your icons here too, otherwise the PWA will fail to load them offline!
+  './icons/icon-72x72.png',
+  './icons/icon-96x96.png',
+  './icons/icon-128x128.png',
+  './icons/icon-144x144.png',
+  './icons/icon-152x152.png',
+  './icons/icon-192x192.png'
+  './icons/icon-384x384.png'
+  './icons/icon-512x512.png'
 ];
 
 // Install event - cache static assets
@@ -73,4 +81,5 @@ self.addEventListener('fetch', (event) => {
           });
       })
   );
+
 });
