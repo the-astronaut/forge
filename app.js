@@ -1685,12 +1685,21 @@ useEffect(() => {
       setRestActive(false);
       setShowComplete(true);
       setWorkoutLog(prev => [...prev, buildLogEntry(activeWorkout, newDone, setLog)]);
+      // Calculate actual volume in kg from completed sets
+      const completedVolume = activeWorkout.exercises.reduce((total, ex) => {
+        const sets = setLog[ex.id] || [];
+        return total + sets.reduce((s, set, si) => {
+          if (!newDone[ex.id]?.[si]) return s;
+          const w = typeof set.weight === 'number' ? set.weight : 0;
+          return s + w * set.reps;
+        }, 0);
+      }, 0);
       setStats(s => ({
         ...s,
-        streak: s.streak + 1,
         workoutsThisWeek: Math.min(s.workoutsThisWeek + 1, 7),
         totalWorkouts: s.totalWorkouts + 1,
-        weeklyVolume: s.weeklyVolume.map((v, i) => i === 6 ? v + 20 : v),
+        activeMinutesThisWeek: (s.activeMinutesThisWeek || 0) + Math.round(workoutDuration / 60),
+        weeklyVolumeKg: (s.weeklyVolumeKg || 0) + completedVolume,
       }));
       return;
     }
@@ -1701,7 +1710,7 @@ useEffect(() => {
     setRestNextEx(nextEx);
     setRestNextSetIdx(nextSetIdx);
     setRestActive(true);
-  }, [activeWorkout, setDone, setLog, buildLogEntry]);
+  }, [activeWorkout, setDone, setLog, buildLogEntry, workoutDuration]);
 
   const adjustSet = useCallback((exId, setIdx, field, delta) => {
     setSetLog(prev => {
@@ -1729,12 +1738,22 @@ useEffect(() => {
     if (activeWorkout) {
       setWorkoutLog(prev => [...prev, buildLogEntry(activeWorkout, setDone, setLog)]);
     }
+    // Calculate partial volume
+    const partialVolume = activeWorkout ? activeWorkout.exercises.reduce((total, ex) => {
+      const sets = setLog[ex.id] || [];
+      return total + sets.reduce((s, set, si) => {
+        if (!setDone[ex.id]?.[si]) return s;
+        const w = typeof set.weight === 'number' ? set.weight : 0;
+        return s + w * set.reps;
+      }, 0);
+    }, 0) : 0;
     setStats(s => ({
       ...s,
       totalWorkouts: s.totalWorkouts + 1,
-      weeklyVolume: s.weeklyVolume.map((v, i) => i === 6 ? v + 10 : v),
+      activeMinutesThisWeek: (s.activeMinutesThisWeek || 0) + Math.round(workoutDuration / 60),
+      weeklyVolumeKg: (s.weeklyVolumeKg || 0) + partialVolume,
     }));
-  }, [activeWorkout, setDone, setLog, buildLogEntry]);
+  }, [activeWorkout, setDone, setLog, buildLogEntry, workoutDuration]);
 
   const formatTime = s => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
   const formatDuration = s => `${Math.floor(s / 60)}m ${s % 60}s`;
@@ -1826,11 +1845,12 @@ function HomeScreen({ stats, profile, onStartWorkout, onNavigate }) {
   const todayWorkout = WORKOUTS[0];
   const initials = profile.name ? profile.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) : 'M';
   const displayName = profile.name ? profile.name.split(' ')[0].toUpperCase() : 'CHAMPION';
-  
-  // Format active hours as "Xh Ym" or just "Xh" or just "Ym"
-  const formatActiveTime = (hours) => {
-    const h = Math.floor(hours);
-    const m = Math.round((hours - h) * 60);
+  const [affirmation] = useState(() => AFFIRMATIONS[Math.floor(Math.random() * AFFIRMATIONS.length)]);
+
+  const activeMinutes = stats.activeMinutesThisWeek || 0;
+  const formatActiveTime = (mins) => {
+    const h = Math.floor(mins / 60);
+    const m = mins % 60;
     if (h > 0 && m > 0) return `${h}h ${m}m`;
     if (h > 0) return `${h}h`;
     return `${m}m`;
@@ -1847,13 +1867,9 @@ function HomeScreen({ stats, profile, onStartWorkout, onNavigate }) {
           <div className="avatar-btn pressable" onClick={() => onNavigate("profile")}>{initials}</div>
         </div>
 
-        <div className="streak-banner pressable">
-          <div className="streak-num">{stats.streak}</div>
-          <div className="streak-text">
-            <div className="top">Day Streak</div>
-            <div className="bottom">Keep it up!</div>
-          </div>
-          <div className="streak-badge">🔥 ON FIRE</div>
+        <div style={{ margin: "14px 24px 0", background: "var(--card)", border: "1px solid var(--border)", borderRadius: 18, padding: "14px 18px" }}>
+          <div style={{ fontSize: 10, color: "var(--lime)", fontWeight: 700, textTransform: "uppercase", letterSpacing: 2, marginBottom: 6 }}>Daily Motivation</div>
+          <div style={{ fontSize: 14, color: "var(--white)", fontStyle: "italic", lineHeight: 1.5 }}>"{affirmation}"</div>
         </div>
 
         <div className="section-header">
@@ -1889,7 +1905,7 @@ function HomeScreen({ stats, profile, onStartWorkout, onNavigate }) {
           </div>
           <div className="stat-card">
             <div className="stat-icon">⏱</div>
-            <div className="stat-val">{formatActiveTime(stats.activeHoursThisWeek)}</div>
+            <div className="stat-val">{formatActiveTime(activeMinutes)}</div>
             <div className="stat-lbl">Active</div>
           </div>
         </div>
@@ -2990,10 +3006,22 @@ function ProgressScreen({ workoutLog }) {
 function ProfileScreen({ stats, profile, updateProfile }) {
   const [editing, setEditing] = useState(false);
   const [editForm, setEditForm] = useState(profile);
-  const [affirmation] = useState(() => AFFIRMATIONS[Math.floor(Math.random() * AFFIRMATIONS.length)]);
+
+  useEffect(() => {
+    if (!editing) setEditForm(profile);
+  }, [profile, editing]);
 
   const handleSave = () => {
-    updateProfile(editForm);
+    // Store previous values before saving
+    const prevProfile = {
+      ...editForm,
+      prev: {
+        weight: profile.weight,
+        height: profile.height,
+        measurements: { ...profile.measurements },
+      }
+    };
+    updateProfile(prevProfile);
     setEditing(false);
   };
 
@@ -3004,8 +3032,41 @@ function ProfileScreen({ stats, profile, updateProfile }) {
 
   const initials = profile.name ? profile.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) : '?';
   const memberSince = new Date(profile.joinDate).getFullYear();
-  const totalVolumeThisWeek = stats.weeklyVolume.reduce((a, b) => a + b, 0);
+  const weeklyVolumeKg = Math.round(stats.weeklyVolumeKg || 0);
   const bmi = profile.weight && profile.height ? (profile.weight / ((profile.height / 100) ** 2)).toFixed(1) : '—';
+
+  // Evolution deltas
+  const prev = profile.prev || {};
+  const weightDelta = prev.weight != null ? (profile.weight - prev.weight) : null;
+  const measurements = profile.measurements || {};
+  const prevMeasurements = prev.measurements || {};
+  const measurementDeltas = {
+    chest: prevMeasurements.chest != null ? (measurements.chest - prevMeasurements.chest) : null,
+    waist: prevMeasurements.waist != null ? (measurements.waist - prevMeasurements.waist) : null,
+    biceps: prevMeasurements.biceps != null ? (measurements.biceps - prevMeasurements.biceps) : null,
+    thighs: prevMeasurements.thighs != null ? (measurements.thighs - prevMeasurements.thighs) : null,
+  };
+
+  const formatDelta = (d, unit) => {
+    if (d === null || d === 0) return null;
+    const sign = d > 0 ? '+' : '';
+    return <span style={{ fontSize: 12, color: d > 0 ? '#C6F135' : '#FF6B6B', marginLeft: 8, fontFamily: "'Space Mono', monospace" }}>{sign}{d}{unit}</span>;
+  };
+
+  // Compute achievements dynamically
+  const totalWorkouts = stats.totalWorkouts || 0;
+  const weeklyVol = stats.weeklyVolumeKg || 0;
+  const workoutsThisWeek = stats.workoutsThisWeek || 0;
+  const computedAchievements = [
+    { id: 1, icon: "🏆", name: "Century Club", desc: "Complete 100 workouts", earned: totalWorkouts >= 100 },
+    { id: 2, icon: "💪", name: "Strong Start", desc: "First workout completed", earned: totalWorkouts >= 1 },
+    { id: 3, icon: "💎", name: "Diamond Lifter", desc: "250 total workouts", earned: totalWorkouts >= 250 },
+    { id: 4, icon: "⚡", name: "Speed Demon", desc: "5 workouts in a week", earned: workoutsThisWeek >= 5 },
+    { id: 5, icon: "🦁", name: "Iron Lion", desc: "Lift 10,000kg total", earned: weeklyVol >= 10000 },
+    { id: 6, icon: "🌙", name: "Night Owl", desc: "Workout after 10pm", earned: false },
+  ];
+  const earned = computedAchievements.filter(a => a.earned);
+  const locked = computedAchievements.filter(a => !a.earned);
 
   return (
     <div className="screen">
@@ -3016,16 +3077,15 @@ function ProfileScreen({ stats, profile, updateProfile }) {
           </div>
           <div className="profile-name">{profile.name || 'SET YOUR NAME'}</div>
           <div className="profile-handle">Member since {memberSince}</div>
-          <div className="profile-affirmation">"{affirmation}"</div>
         </div>
 
         <div className="stats-grid">
           <div className="stats-cell">
-            <div className="val">{stats.totalWorkouts}</div>
+            <div className="val">{totalWorkouts}</div>
             <div className="lbl">Workouts</div>
           </div>
           <div className="stats-cell">
-            <div className="val">{totalVolumeThisWeek}<span className="unit">t</span></div>
+            <div className="val">{weeklyVolumeKg}<span className="unit" style={{fontSize:14}}>kg</span></div>
             <div className="lbl">Week Volume</div>
           </div>
           <div className="stats-cell">
@@ -3045,7 +3105,7 @@ function ProfileScreen({ stats, profile, updateProfile }) {
           </div>
           <div className="info-row">
             <div className="info-label">Weight</div>
-            <div className="info-value">{profile.weight} kg</div>
+            <div className="info-value">{profile.weight} kg {formatDelta(weightDelta, 'kg')}</div>
           </div>
           <div className="info-row">
             <div className="info-label">BMI</div>
@@ -3060,19 +3120,19 @@ function ProfileScreen({ stats, profile, updateProfile }) {
         <div className="info-card">
           <div className="info-row">
             <div className="info-label">Chest</div>
-            <div className="info-value">{profile.measurements.chest} cm</div>
+            <div className="info-value">{measurements.chest} cm {formatDelta(measurementDeltas.chest, 'cm')}</div>
           </div>
           <div className="info-row">
             <div className="info-label">Waist</div>
-            <div className="info-value">{profile.measurements.waist} cm</div>
+            <div className="info-value">{measurements.waist} cm {formatDelta(measurementDeltas.waist, 'cm')}</div>
           </div>
           <div className="info-row">
             <div className="info-label">Biceps</div>
-            <div className="info-value">{profile.measurements.biceps} cm</div>
+            <div className="info-value">{measurements.biceps} cm {formatDelta(measurementDeltas.biceps, 'cm')}</div>
           </div>
           <div className="info-row">
             <div className="info-label">Thighs</div>
-            <div className="info-value">{profile.measurements.thighs} cm</div>
+            <div className="info-value">{measurements.thighs} cm {formatDelta(measurementDeltas.thighs, 'cm')}</div>
           </div>
         </div>
 
@@ -3085,7 +3145,7 @@ function ProfileScreen({ stats, profile, updateProfile }) {
         </div>
 
         <div className="ach-grid">
-          {ACHIEVEMENTS.filter(a => a.earned).map(a => (
+          {earned.map(a => (
             <div key={a.id} className="ach-badge earned pressable">
               <div className="ach-icon">{a.icon}</div>
               <div className="ach-name">{a.name}</div>
@@ -3093,7 +3153,7 @@ function ProfileScreen({ stats, profile, updateProfile }) {
               <div className="ach-earned-tag">✓ EARNED</div>
             </div>
           ))}
-          {ACHIEVEMENTS.filter(a => !a.earned).slice(0, 2).map(a => (
+          {locked.slice(0, Math.max(2, 4 - earned.length)).map(a => (
             <div key={a.id} className="ach-badge pressable">
               <div className="ach-icon" style={{ filter: "grayscale(1)", opacity: 0.35 }}>{a.icon}</div>
               <div className="ach-name" style={{ color: "#555" }}>{a.name}</div>
