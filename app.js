@@ -132,19 +132,6 @@ const ACHIEVEMENTS = [
   { id: 6, icon: "🌙", name: "Night Owl", desc: "Workout after 10pm", earned: false },
 ];
 
-const AFFIRMATIONS = [
-  "You're building something incredible, one rep at a time",
-  "Every workout is a step toward your strongest self",
-  "Progress isn't always visible, but it's always happening",
-  "Your dedication today shapes your strength tomorrow",
-  "The hardest step is showing up—you're already winning",
-  "Small improvements compound into extraordinary results",
-  "You're not just training muscles, you're training discipline",
-  "Consistency beats perfection every single time",
-  "Your future self will thank you for not giving up",
-  "Strength isn't given, it's earned—and you're earning it",
-];
-
 // ─── EXERCISE LIBRARY ────────────────────────────────────────────────────────
 
 const EXERCISE_LIBRARY = [
@@ -3198,5 +3185,3 @@ if ('serviceWorker' in navigator) {
       .catch(err => console.log('SW Failed', err));
   });
 }
-
-
