@@ -63,12 +63,14 @@
       "src": "screenshots/screen1.png",
       "sizes": "390x844",
       "type": "image/png",
-      "form_factor": "narrow"
+      "form_factor": "narrow",
+      "label": "Forge Workout Tracker"
     }
   ],
   "categories": ["health", "fitness", "lifestyle"],
   "lang": "en"
 
 }
+
 
 
