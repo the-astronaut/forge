@@ -3064,7 +3064,7 @@ function ProfileScreen({ stats, profile, updateProfile }) {
             }
             .cyber-avatar-wrap { animation: cyber-pulse 3s ease-in-out infinite; }
           `}</style>
-          <div className="cyber-avatar-wrap">
+          <div className="cyber-avatar-wrap" style={{ margin: '0 auto 16px' }}>
             <div className="cyber-outer-ring" />
             <div className="cyber-mask" />
             <div className="cyber-inner-ring" />
