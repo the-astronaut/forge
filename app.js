@@ -236,7 +236,7 @@ const css = `
     0%,100% { text-shadow: 0 0 14px #ffd700, 0 0 28px #ff6b00; }
     50%      { text-shadow: 0 0 6px #ffd700; }
   }
-  .cyber-avatar-wrap { position:relative; animation: cyber-pulse 3s ease-in-out infinite; width: 110px; height: 110px; }
+  .cyber-avatar-wrap { position:relative; width:110px; height:110px; animation: cyber-pulse 3s ease-in-out infinite; }
   .cyber-outer-ring {
     position:absolute; inset:0; border-radius:50%;
     background: conic-gradient(#ffd700 0deg, #ff6b00 60deg, transparent 60deg, transparent 90deg,
@@ -266,14 +266,6 @@ const css = `
     color:#ffd700;
     animation: cyber-letter-glow 2s ease-in-out infinite;
   }
-  .cyber-avatar-wrap.small { width:80px; height:80px; }
-  .cyber-avatar-wrap.small .cyber-mask { inset:5px; }
-  .cyber-avatar-wrap.small .cyber-inner-ring { inset:9px; }
-  .cyber-avatar-wrap.small .cyber-corner-tl { top:11px; left:11px; }
-  .cyber-avatar-wrap.small .cyber-corner-tr { top:11px; right:11px; }
-  .cyber-avatar-wrap.small .cyber-corner-bl { bottom:11px; left:11px; }
-  .cyber-avatar-wrap.small .cyber-corner-br { bottom:11px; right:11px; }
-  .cyber-avatar-wrap.small .cyber-center-letter { inset:13px; font-size:1.5rem; }
 
   .scroll-area {
     flex: 1;
@@ -353,30 +345,17 @@ const css = `
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 14px;
     overflow: hidden;
   }
-
-  /* ambient glow behind avatar */
   .home-header::before {
     content: '';
     position: absolute;
     top: 10px; left: 50%; transform: translateX(-50%);
-    width: 180px; height: 180px;
+    width: 200px; height: 200px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(255,215,0,0.13) 0%, rgba(255,107,0,0.06) 50%, transparent 75%);
+    background: radial-gradient(circle, rgba(255,215,0,0.12) 0%, rgba(255,107,0,0.05) 50%, transparent 75%);
     pointer-events: none;
   }
-
-  /* subtle scanline texture */
-  .home-header::after {
-    content: '';
-    position: absolute; inset: 0;
-    background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(255,255,255,0.012) 3px, rgba(255,255,255,0.012) 4px);
-    pointer-events: none;
-  }
-
-  /* thin gold accent line at bottom */
   .home-header-inner {
     position: relative; z-index: 1;
     display: flex; flex-direction: column; align-items: center; gap: 10px;
@@ -384,34 +363,13 @@ const css = `
     padding-bottom: 24px;
     border-bottom: 1px solid rgba(255,215,0,0.15);
   }
-
   .home-greeting {
     display: flex; flex-direction: column; align-items: center; gap: 2px;
     text-align: center;
   }
-
-  .home-greeting .hey {
-    font-size: 11px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--gray);
-  }
-
-  .home-greeting .name {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 38px;
-    color: var(--white);
-    line-height: 1;
-    letter-spacing: 3px;
-  }
-
-  .home-date-tag {
-    font-size: 10px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: rgba(255,215,0,0.5);
-    margin-top: 2px;
-  }
+  .home-greeting .hey { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gray); }
+  .home-greeting .name { font-family: 'Bebas Neue', sans-serif; font-size: 38px; color: var(--white); line-height: 1; letter-spacing: 3px; }
+  .home-date-tag { font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(255,215,0,0.5); }
 
   .avatar-btn {
     width: 44px; height: 44px;
@@ -1947,14 +1905,14 @@ function HomeScreen({ stats, profile, onStartWorkout, onNavigate }) {
         <div className="home-header">
           <div className="home-header-inner">
             <div className="pressable" onClick={() => onNavigate("profile")} style={{ background:'none', border:'none', cursor:'pointer' }}>
-              <div className="cyber-avatar-wrap" style={{ width:100, height:100 }}>
-                <div className="cyber-outer-ring" />
-                <div className="cyber-mask" />
-                <div className="cyber-inner-ring" />
-                <div className="cyber-corner-tl" />
-                <div className="cyber-corner-tr" />
-                <div className="cyber-corner-bl" />
-                <div className="cyber-corner-br" />
+              <div className="cyber-avatar-wrap">
+                <div className="cyber-outer-ring"></div>
+                <div className="cyber-mask"></div>
+                <div className="cyber-inner-ring"></div>
+                <div className="cyber-corner-tl"></div>
+                <div className="cyber-corner-tr"></div>
+                <div className="cyber-corner-bl"></div>
+                <div className="cyber-corner-br"></div>
                 <div className="cyber-center-letter">{initials}</div>
               </div>
             </div>
@@ -3121,67 +3079,14 @@ function ProfileScreen({ stats, profile, updateProfile }) {
     <div className="screen">
       <div className="scroll-area">
         <div className="profile-hero">
-          {/* ── Cyberpunk Avatar ── */}
-          <style>{`
-            @keyframes cyber-spin { to { transform: rotate(360deg); } }
-            @keyframes cyber-spin-rev { to { transform: rotate(-360deg); } }
-            @keyframes cyber-pulse {
-              0%,100% { opacity:1; filter: drop-shadow(0 0 6px #ffd700) drop-shadow(0 0 12px #ff6b00); }
-              50%      { opacity:0.7; filter: drop-shadow(0 0 2px #ffd700); }
-            }
-            @keyframes cyber-letter-glow {
-              0%,100% { text-shadow: 0 0 14px #ffd700, 0 0 28px #ff6b00; }
-              50%      { text-shadow: 0 0 6px #ffd700; }
-            }
-            .cyber-avatar-wrap { position:relative; width:110px; height:110px; }
-            .cyber-outer-ring {
-              position:absolute; inset:0; border-radius:50%;
-              background: conic-gradient(#ffd700 0deg, #ff6b00 60deg, transparent 60deg, transparent 90deg,
-                #ffd700 90deg, #ff6b00 150deg, transparent 150deg, transparent 180deg,
-                #ffd700 180deg, #ff6b00 240deg, transparent 240deg, transparent 270deg,
-                #ffd700 270deg, #ff6b00 330deg, transparent 330deg, transparent 360deg);
-              animation: cyber-spin 8s linear infinite;
-            }
-            .cyber-mask {
-              position:absolute; inset:7px; border-radius:50%;
-              background:#080510;
-            }
-            .cyber-inner-ring {
-              position:absolute; inset:13px; border-radius:50%;
-              border: 1px solid rgba(255,215,0,0.3);
-              animation: cyber-spin-rev 12s linear infinite;
-            }
-            .cyber-inner-ring::before, .cyber-inner-ring::after {
-              content:''; position:absolute; background:#ffd700;
-              border-radius:2px;
-            }
-            .cyber-inner-ring::before { width:6px; height:2px; top:-1px; left:50%; transform:translateX(-50%); }
-            .cyber-inner-ring::after  { width:6px; height:2px; bottom:-1px; left:50%; transform:translateX(-50%); }
-            .cyber-corner-tl, .cyber-corner-tr, .cyber-corner-bl, .cyber-corner-br {
-              position:absolute; width:13px; height:13px; border-color:#ffd700; border-style:solid;
-            }
-            .cyber-corner-tl { top:17px;  left:17px;  border-width:2px 0 0 2px; }
-            .cyber-corner-tr { top:17px;  right:17px; border-width:2px 2px 0 0; }
-            .cyber-corner-bl { bottom:17px; left:17px;  border-width:0 0 2px 2px; }
-            .cyber-corner-br { bottom:17px; right:17px; border-width:0 2px 2px 0; }
-            .cyber-center-letter {
-              position:absolute; inset:19px; border-radius:50%;
-              display:flex; align-items:center; justify-content:center;
-              font-family:'Bebas Neue', monospace;
-              font-size:2.2rem; font-weight:900;
-              color:#ffd700;
-              animation: cyber-letter-glow 2s ease-in-out infinite;
-            }
-            .cyber-avatar-wrap { animation: cyber-pulse 3s ease-in-out infinite; }
-          `}</style>
           <div className="cyber-avatar-wrap" style={{ margin: '0 auto 16px' }}>
-            <div className="cyber-outer-ring" />
-            <div className="cyber-mask" />
-            <div className="cyber-inner-ring" />
-            <div className="cyber-corner-tl" />
-            <div className="cyber-corner-tr" />
-            <div className="cyber-corner-bl" />
-            <div className="cyber-corner-br" />
+            <div className="cyber-outer-ring"></div>
+            <div className="cyber-mask"></div>
+            <div className="cyber-inner-ring"></div>
+            <div className="cyber-corner-tl"></div>
+            <div className="cyber-corner-tr"></div>
+            <div className="cyber-corner-bl"></div>
+            <div className="cyber-corner-br"></div>
             <div className="cyber-center-letter">{initials}</div>
           </div>
           <div className="profile-name">{profile.name || 'SET YOUR NAME'}</div>
