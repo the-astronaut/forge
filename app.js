@@ -228,6 +228,52 @@ const css = `
 
   @keyframes cyber-spin { to { transform: rotate(360deg); } }
   @keyframes cyber-spin-rev { to { transform: rotate(-360deg); } }
+  @keyframes cyber-pulse {
+    0%,100% { opacity:1; filter: drop-shadow(0 0 6px #ffd700) drop-shadow(0 0 12px #ff6b00); }
+    50%      { opacity:0.7; filter: drop-shadow(0 0 2px #ffd700); }
+  }
+  @keyframes cyber-letter-glow {
+    0%,100% { text-shadow: 0 0 14px #ffd700, 0 0 28px #ff6b00; }
+    50%      { text-shadow: 0 0 6px #ffd700; }
+  }
+  .cyber-avatar-wrap { position:relative; animation: cyber-pulse 3s ease-in-out infinite; }
+  .cyber-outer-ring {
+    position:absolute; inset:0; border-radius:50%;
+    background: conic-gradient(#ffd700 0deg, #ff6b00 60deg, transparent 60deg, transparent 90deg,
+      #ffd700 90deg, #ff6b00 150deg, transparent 150deg, transparent 180deg,
+      #ffd700 180deg, #ff6b00 240deg, transparent 240deg, transparent 270deg,
+      #ffd700 270deg, #ff6b00 330deg, transparent 330deg, transparent 360deg);
+    animation: cyber-spin 8s linear infinite;
+  }
+  .cyber-mask { position:absolute; inset:7px; border-radius:50%; background:#080510; }
+  .cyber-inner-ring {
+    position:absolute; inset:13px; border-radius:50%;
+    border: 1px solid rgba(255,215,0,0.3);
+    animation: cyber-spin-rev 12s linear infinite;
+  }
+  .cyber-corner-tl, .cyber-corner-tr, .cyber-corner-bl, .cyber-corner-br {
+    position:absolute; width:13px; height:13px; border-color:#ffd700; border-style:solid;
+  }
+  .cyber-corner-tl { top:17px;  left:17px;  border-width:2px 0 0 2px; }
+  .cyber-corner-tr { top:17px;  right:17px; border-width:2px 2px 0 0; }
+  .cyber-corner-bl { bottom:17px; left:17px;  border-width:0 0 2px 2px; }
+  .cyber-corner-br { bottom:17px; right:17px; border-width:0 2px 2px 0; }
+  .cyber-center-letter {
+    position:absolute; inset:19px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Bebas Neue', sans-serif;
+    font-size:2.2rem; font-weight:900;
+    color:#ffd700;
+    animation: cyber-letter-glow 2s ease-in-out infinite;
+  }
+  .cyber-avatar-wrap.small { width:80px; height:80px; }
+  .cyber-avatar-wrap.small .cyber-mask { inset:5px; }
+  .cyber-avatar-wrap.small .cyber-inner-ring { inset:9px; }
+  .cyber-avatar-wrap.small .cyber-corner-tl { top:11px; left:11px; }
+  .cyber-avatar-wrap.small .cyber-corner-tr { top:11px; right:11px; }
+  .cyber-avatar-wrap.small .cyber-corner-bl { bottom:11px; left:11px; }
+  .cyber-avatar-wrap.small .cyber-corner-br { bottom:11px; right:11px; }
+  .cyber-avatar-wrap.small .cyber-center-letter { inset:13px; font-size:1.5rem; }
 
   .scroll-area {
     flex: 1;
@@ -1847,44 +1893,18 @@ function HomeScreen({ stats, profile, onStartWorkout, onNavigate }) {
             <div className="hey">Good morning 👋</div>
             <div className="name">{displayName}</div>
           </div>
-          <div className="avatar-btn pressable" onClick={() => onNavigate("profile")} style={{ background: 'none', overflow: 'visible' }}>
-            <div style={{ position:'relative', width:44, height:44 }}>
-              {/* spinning arc segments */}
-              <div style={{
-                position:'absolute', inset:0, borderRadius:'50%',
-                background:'conic-gradient(#ffd700 0deg, #ff6b00 55deg, transparent 55deg, transparent 90deg, #ffd700 90deg, #ff6b00 145deg, transparent 145deg, transparent 180deg, #ffd700 180deg, #ff6b00 235deg, transparent 235deg, transparent 270deg, #ffd700 270deg, #ff6b00 325deg, transparent 325deg, transparent 360deg)',
-                animation:'cyber-spin 8s linear infinite',
-              }}/>
-              {/* dark mask */}
-              <div style={{ position:'absolute', inset:3, borderRadius:'50%', background:'var(--black, #080510)' }}/>
-              {/* corner brackets */}
-              {[['top','left'],['top','right'],['bottom','left'],['bottom','right']].map(([v,h]) => (
-                <div key={v+h} style={{
-                  position:'absolute', width:6, height:6,
-                  [v]:6, [h]:6,
-                  borderColor:'#ffd700', borderStyle:'solid',
-                  borderWidth: `${v==='top'?'2px':'0'} ${h==='right'?'2px':'0'} ${v==='bottom'?'2px':'0'} ${h==='left'?'2px':'0'}`,
-                }}/>
-              ))}
-              {/* initials */}
-              <div style={{
-                position:'absolute', inset:4, borderRadius:'50%',
-                display:'flex', alignItems:'center', justifyContent:'center',
-                fontFamily:"'Bebas Neue', sans-serif", fontSize:15, fontWeight:900,
-                color:'#ffd700',
-                textShadow:'0 0 8px #ffd700, 0 0 16px #ff6b00',
-              }}>{initials}</div>
+          <div className="pressable" onClick={() => onNavigate("profile")} style={{ background:'none', border:'none', cursor:'pointer' }}>
+            <div className="cyber-avatar-wrap small">
+              <div className="cyber-outer-ring" />
+              <div className="cyber-mask" />
+              <div className="cyber-inner-ring" />
+              <div className="cyber-corner-tl" />
+              <div className="cyber-corner-tr" />
+              <div className="cyber-corner-bl" />
+              <div className="cyber-corner-br" />
+              <div className="cyber-center-letter">{initials}</div>
             </div>
           </div>
-        </div>
-
-        <div className="streak-banner pressable">
-          <div className="streak-num">{stats.streak}</div>
-          <div className="streak-text">
-            <div className="top">Day Streak</div>
-            <div className="bottom">Keep it up!</div>
-          </div>
-          <div className="streak-badge">🔥 ON FIRE</div>
         </div>
 
         <div className="section-header">
