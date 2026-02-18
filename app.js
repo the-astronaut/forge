@@ -341,35 +341,36 @@ const css = `
   /* ── HOME SCREEN ── */
   .home-header {
     position: relative;
-    padding: 36px 24px 28px;
+    padding: 28px 24px 20px;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
+    justify-content: space-between;
     overflow: hidden;
   }
   .home-header::before {
     content: '';
     position: absolute;
-    top: 10px; left: 50%; transform: translateX(-50%);
-    width: 200px; height: 200px;
+    top: -10px; right: -10px;
+    width: 140px; height: 140px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(255,215,0,0.12) 0%, rgba(255,107,0,0.05) 50%, transparent 75%);
+    background: radial-gradient(circle, rgba(255,215,0,0.10) 0%, rgba(255,107,0,0.04) 50%, transparent 75%);
     pointer-events: none;
   }
   .home-header-inner {
     position: relative; z-index: 1;
-    display: flex; flex-direction: column; align-items: center; gap: 10px;
+    display: flex; flex-direction: row; align-items: center;
+    justify-content: space-between;
     width: 100%;
-    padding-bottom: 24px;
+    padding-bottom: 20px;
     border-bottom: 1px solid rgba(255,215,0,0.15);
   }
   .home-greeting {
-    display: flex; flex-direction: column; align-items: center; gap: 2px;
-    text-align: center;
+    display: flex; flex-direction: column; gap: 2px;
   }
   .home-greeting .hey { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gray); }
   .home-greeting .name { font-family: 'Bebas Neue', sans-serif; font-size: 38px; color: var(--white); line-height: 1; letter-spacing: 3px; }
-  .home-date-tag { font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(255,215,0,0.5); }
+  .home-date-tag { font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(255,215,0,0.5); margin-top: 3px; }
 
   .avatar-btn {
     width: 44px; height: 44px;
@@ -1904,6 +1905,13 @@ function HomeScreen({ stats, profile, onStartWorkout, onNavigate }) {
       <div className="scroll-area">
         <div className="home-header">
           <div className="home-header-inner">
+            <div>
+              <div className="home-greeting">
+                <div className="hey">Good morning 👋</div>
+                <div className="name">{displayName}</div>
+              </div>
+              <div className="home-date-tag">{new Date().toLocaleDateString('en-US', { weekday:'long', month:'short', day:'numeric' })}</div>
+            </div>
             <div className="pressable" onClick={() => onNavigate("profile")} style={{ background:'none', border:'none', cursor:'pointer' }}>
               <div className="cyber-avatar-wrap">
                 <div className="cyber-outer-ring"></div>
@@ -1916,11 +1924,6 @@ function HomeScreen({ stats, profile, onStartWorkout, onNavigate }) {
                 <div className="cyber-center-letter">{initials}</div>
               </div>
             </div>
-            <div className="home-greeting">
-              <div className="hey">Good morning 👋</div>
-              <div className="name">{displayName}</div>
-            </div>
-            <div className="home-date-tag">{new Date().toLocaleDateString('en-US', { weekday:'long', month:'short', day:'numeric' })}</div>
           </div>
         </div>
 
