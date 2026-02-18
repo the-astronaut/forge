@@ -341,7 +341,7 @@ const css = `
   /* ── HOME SCREEN ── */
   .home-header {
     position: relative;
-    padding: 28px 24px 20px;
+    padding: 18px 24px 14px;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -362,7 +362,7 @@ const css = `
     display: flex; flex-direction: row; align-items: center;
     justify-content: space-between;
     width: 100%;
-    padding-bottom: 20px;
+    padding-bottom: 14px;
     border-bottom: 1px solid rgba(255,215,0,0.15);
   }
   .home-greeting {
@@ -1825,7 +1825,7 @@ useEffect(() => {
       <style>{css}</style>
       <div className="app-shell">
         <div className="phone">
-          {tab === "home" && <HomeScreen stats={stats} profile={profile} onStartWorkout={startWorkout} onNavigate={setTab} />}
+          {tab === "home" && <HomeScreen stats={stats} profile={profile} customWorkouts={customWorkouts} onStartWorkout={startWorkout} onNavigate={setTab} />}
           {tab === "explore" && <ExploreScreen workouts={filteredWorkouts} categories={categories} filterCategory={filterCategory} setFilterCategory={setFilterCategory} onStartWorkout={startWorkout} onCreateWorkout={() => setTab("create")} />}
           {tab === "create" && (
             <CreateWorkoutScreen
@@ -1886,7 +1886,7 @@ useEffect(() => {
 
 // ─── HOME SCREEN ─────────────────────────────────────────────────────────────
 
-function HomeScreen({ stats, profile, onStartWorkout, onNavigate }) {
+function HomeScreen({ stats, profile, customWorkouts, onStartWorkout, onNavigate }) {
   const todayWorkout = WORKOUTS[0];
   const initials = profile.name ? profile.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) : 'M';
   const displayName = profile.name ? profile.name.split(' ')[0].toUpperCase() : 'CHAMPION';
@@ -1971,13 +1971,13 @@ function HomeScreen({ stats, profile, onStartWorkout, onNavigate }) {
         </div>
 
         <div className="workouts-scroll">
-          {WORKOUTS.map((w, i) => {
+          {[...(customWorkouts || []), ...WORKOUTS].map((w, i) => {
             const tagColors = ["#C6F135", "#7B9FFF", "#C6F135", "#FF8C42"];
             return (
               <div key={w.id} className="workout-card pressable" onClick={() => onStartWorkout(w)}>
                 <div className="bg" style={{ background: w.bg }}>{w.emoji}</div>
                 <div className="overlay">
-                  <div className="wc-tag" style={{ color: tagColors[i] }}>{w.category}</div>
+                  <div className="wc-tag" style={{ color: tagColors[i % tagColors.length] }}>{w.category}</div>
                   <div className="wc-name">{w.name}</div>
                   <div className="wc-dur">{w.duration} min · {w.difficulty}</div>
                 </div>
@@ -1985,7 +1985,6 @@ function HomeScreen({ stats, profile, onStartWorkout, onNavigate }) {
             );
           })}
         </div>
-        <div style={{ height: 16 }} />
       </div>
     </div>
   );
