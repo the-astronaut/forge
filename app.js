@@ -226,6 +226,9 @@ const css = `
     to { opacity: 1; transform: translateY(0); }
   }
 
+  @keyframes cyber-spin { to { transform: rotate(360deg); } }
+  @keyframes cyber-spin-rev { to { transform: rotate(-360deg); } }
+
   .scroll-area {
     flex: 1;
     overflow-y: auto;
