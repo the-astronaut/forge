@@ -236,7 +236,7 @@ const css = `
     0%,100% { text-shadow: 0 0 14px #ffd700, 0 0 28px #ff6b00; }
     50%      { text-shadow: 0 0 6px #ffd700; }
   }
-  .cyber-avatar-wrap { position:relative; animation: cyber-pulse 3s ease-in-out infinite; }
+  .cyber-avatar-wrap { position:relative; animation: cyber-pulse 3s ease-in-out infinite; width: 110px; height: 110px; }
   .cyber-outer-ring {
     position:absolute; inset:0; border-radius:50%;
     background: conic-gradient(#ffd700 0deg, #ff6b00 60deg, transparent 60deg, transparent 90deg,
@@ -348,14 +348,70 @@ const css = `
 
   /* ── HOME SCREEN ── */
   .home-header {
-    padding: 8px 24px 0;
+    position: relative;
+    padding: 36px 24px 28px;
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
     align-items: center;
+    gap: 14px;
+    overflow: hidden;
   }
 
-  .home-greeting .hey { font-size: 12px; color: var(--gray); }
-  .home-greeting .name { font-family: 'Bebas Neue', sans-serif; font-size: 30px; color: var(--white); line-height: 1; letter-spacing: 1px; }
+  /* ambient glow behind avatar */
+  .home-header::before {
+    content: '';
+    position: absolute;
+    top: 10px; left: 50%; transform: translateX(-50%);
+    width: 180px; height: 180px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,215,0,0.13) 0%, rgba(255,107,0,0.06) 50%, transparent 75%);
+    pointer-events: none;
+  }
+
+  /* subtle scanline texture */
+  .home-header::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(255,255,255,0.012) 3px, rgba(255,255,255,0.012) 4px);
+    pointer-events: none;
+  }
+
+  /* thin gold accent line at bottom */
+  .home-header-inner {
+    position: relative; z-index: 1;
+    display: flex; flex-direction: column; align-items: center; gap: 10px;
+    width: 100%;
+    padding-bottom: 24px;
+    border-bottom: 1px solid rgba(255,215,0,0.15);
+  }
+
+  .home-greeting {
+    display: flex; flex-direction: column; align-items: center; gap: 2px;
+    text-align: center;
+  }
+
+  .home-greeting .hey {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gray);
+  }
+
+  .home-greeting .name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 38px;
+    color: var(--white);
+    line-height: 1;
+    letter-spacing: 3px;
+  }
+
+  .home-date-tag {
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(255,215,0,0.5);
+    margin-top: 2px;
+  }
 
   .avatar-btn {
     width: 44px; height: 44px;
@@ -1889,21 +1945,24 @@ function HomeScreen({ stats, profile, onStartWorkout, onNavigate }) {
     <div className="screen">
       <div className="scroll-area">
         <div className="home-header">
-          <div className="home-greeting">
-            <div className="hey">Good morning 👋</div>
-            <div className="name">{displayName}</div>
-          </div>
-          <div className="pressable" onClick={() => onNavigate("profile")} style={{ background:'none', border:'none', cursor:'pointer' }}>
-            <div className="cyber-avatar-wrap small">
-              <div className="cyber-outer-ring" />
-              <div className="cyber-mask" />
-              <div className="cyber-inner-ring" />
-              <div className="cyber-corner-tl" />
-              <div className="cyber-corner-tr" />
-              <div className="cyber-corner-bl" />
-              <div className="cyber-corner-br" />
-              <div className="cyber-center-letter">{initials}</div>
+          <div className="home-header-inner">
+            <div className="pressable" onClick={() => onNavigate("profile")} style={{ background:'none', border:'none', cursor:'pointer' }}>
+              <div className="cyber-avatar-wrap" style={{ width:100, height:100 }}>
+                <div className="cyber-outer-ring" />
+                <div className="cyber-mask" />
+                <div className="cyber-inner-ring" />
+                <div className="cyber-corner-tl" />
+                <div className="cyber-corner-tr" />
+                <div className="cyber-corner-bl" />
+                <div className="cyber-corner-br" />
+                <div className="cyber-center-letter">{initials}</div>
+              </div>
             </div>
+            <div className="home-greeting">
+              <div className="hey">Good morning 👋</div>
+              <div className="name">{displayName}</div>
+            </div>
+            <div className="home-date-tag">{new Date().toLocaleDateString('en-US', { weekday:'long', month:'short', day:'numeric' })}</div>
           </div>
         </div>
 
