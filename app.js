@@ -1844,7 +1844,35 @@ function HomeScreen({ stats, profile, onStartWorkout, onNavigate }) {
             <div className="hey">Good morning 👋</div>
             <div className="name">{displayName}</div>
           </div>
-          <div className="avatar-btn pressable" onClick={() => onNavigate("profile")}>{initials}</div>
+          <div className="avatar-btn pressable" onClick={() => onNavigate("profile")} style={{ background: 'none', overflow: 'visible' }}>
+            <div style={{ position:'relative', width:44, height:44 }}>
+              {/* spinning arc segments */}
+              <div style={{
+                position:'absolute', inset:0, borderRadius:'50%',
+                background:'conic-gradient(#ffd700 0deg, #ff6b00 55deg, transparent 55deg, transparent 90deg, #ffd700 90deg, #ff6b00 145deg, transparent 145deg, transparent 180deg, #ffd700 180deg, #ff6b00 235deg, transparent 235deg, transparent 270deg, #ffd700 270deg, #ff6b00 325deg, transparent 325deg, transparent 360deg)',
+                animation:'cyber-spin 8s linear infinite',
+              }}/>
+              {/* dark mask */}
+              <div style={{ position:'absolute', inset:3, borderRadius:'50%', background:'var(--black, #080510)' }}/>
+              {/* corner brackets */}
+              {[['top','left'],['top','right'],['bottom','left'],['bottom','right']].map(([v,h]) => (
+                <div key={v+h} style={{
+                  position:'absolute', width:6, height:6,
+                  [v]:6, [h]:6,
+                  borderColor:'#ffd700', borderStyle:'solid',
+                  borderWidth: `${v==='top'?'2px':'0'} ${h==='right'?'2px':'0'} ${v==='bottom'?'2px':'0'} ${h==='left'?'2px':'0'}`,
+                }}/>
+              ))}
+              {/* initials */}
+              <div style={{
+                position:'absolute', inset:4, borderRadius:'50%',
+                display:'flex', alignItems:'center', justifyContent:'center',
+                fontFamily:"'Bebas Neue', sans-serif", fontSize:15, fontWeight:900,
+                color:'#ffd700',
+                textShadow:'0 0 8px #ffd700, 0 0 16px #ff6b00',
+              }}>{initials}</div>
+            </div>
+          </div>
         </div>
 
         <div className="streak-banner pressable">
