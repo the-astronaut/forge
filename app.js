@@ -128,14 +128,30 @@ function loadWorkoutStats() {
   return saved ? JSON.parse(saved) : INITIAL_STATS;
 }
 
+// Add these to your storage helpers
+function loadWorkoutHistory() {
+  const saved = localStorage.getItem('forgeHistory');
+  return saved ? JSON.parse(saved) : [];
+}
+
+function saveToHistory(session) {
+  const history = loadWorkoutHistory();
+  history.push({
+    ...session,
+    date: new Date().toISOString(),
+    id: Date.now() 
+  });
+  localStorage.setItem('forgeHistory', JSON.stringify(history));
+}
 // ─── DATA EXPORT ────────────────────────────────────────────────────────────
 
 function exportUserDataToCSV() {
   const profile = loadProfile();
   const stats = loadWorkoutStats();
+  const history = loadWorkoutHistory(); // Load the new history array
   
-   const rows = [
-    ["Category", "Metric", "Value"], // Headers
+  const rows = [
+    ["SECTION", "METRIC", "VALUE"], 
     ["Profile", "Name", profile.name || "User"],
     ["Profile", "Height", `${profile.height} cm`],
     ["Profile", "Weight", `${profile.weight} kg`],
@@ -146,18 +162,30 @@ function exportUserDataToCSV() {
     ["Measurements", "Biceps", profile.measurements.biceps],
     ["Measurements", "Waist", profile.measurements.waist],
     ["Measurements", "Thighs", profile.measurements.thighs],
-    ["System", "Export Date", new Date().toLocaleString()]
+    ["System", "Export Date", new Date().toLocaleString()],
+    ["", "", ""] // Spacer
   ];
 
-  // Convert array to CSV string
-  const csvContent = rows.map(e => e.join(",")).join("\n");
+  // Add History Section if it exists
+  if (history.length > 0) {
+    rows.push(["WORKOUT HISTORY LOG"]);
+    rows.push(["Date", "Workout Name", "Duration (mins)"]);
+    
+    history.forEach(workout => {
+      rows.push([
+        new Date(workout.date).toLocaleDateString(),
+        workout.name,
+        workout.duration
+      ]);
+    });
+  }
 
-  // Trigger download
+  const csvContent = rows.map(e => e.join(",")).join("\n");
   const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.setAttribute("href", url);
-  link.setAttribute("download", `forge_backup_${new Date().toISOString().slice(0,10)}.csv`);
+  link.setAttribute("download", `forge_history_backup_${new Date().toISOString().slice(0,10)}.csv`);
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
