@@ -3191,9 +3191,7 @@ function ProfileScreen({ stats, profile, updateProfile }) {
         <button className="edit-btn pressable" onClick={() => setEditing(true)}>
           Edit Profile
         </button>
-        <button 
-  className="edit-btn" 
-  onClick={exportUserDataToCSV}
+        <button className="edit-btn pressable" onClick={exportUserDataToCSV}
   style={{ marginTop: '8px', borderColor: 'rgba(255,255,255,0.2)', color: '#fff' }}
 >
   EXPORT DATA (CSV)
