@@ -122,10 +122,45 @@ function loadProfile() {
 function saveProfile(profile) {
   localStorage.setItem('forgeProfile', JSON.stringify(profile));
 }
-// Add these next to your loadProfile / saveProfile functions
+
 function loadWorkoutStats() {
   const saved = localStorage.getItem('forgeStats');
   return saved ? JSON.parse(saved) : INITIAL_STATS;
+}
+
+// ─── DATA EXPORT ────────────────────────────────────────────────────────────
+
+function exportUserDataToCSV() {
+  const profile = loadProfile();
+  const stats = loadWorkoutStats();
+  
+   const rows = [
+    ["Category", "Metric", "Value"], // Headers
+    ["Profile", "Name", profile.name || "User"],
+    ["Profile", "Height", `${profile.height} cm`],
+    ["Profile", "Weight", `${profile.weight} kg`],
+    ["Stats", "Total Workouts", stats.totalWorkouts],
+    ["Stats", "Current Streak", stats.streak],
+    ["Stats", "Active Hours", stats.activeHoursThisWeek],
+    ["Measurements", "Chest", profile.measurements.chest],
+    ["Measurements", "Biceps", profile.measurements.biceps],
+    ["Measurements", "Waist", profile.measurements.waist],
+    ["Measurements", "Thighs", profile.measurements.thighs],
+    ["System", "Export Date", new Date().toLocaleString()]
+  ];
+
+  // Convert array to CSV string
+  const csvContent = rows.map(e => e.join(",")).join("\n");
+
+  // Trigger download
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.setAttribute("href", url);
+  link.setAttribute("download", `forge_backup_${new Date().toISOString().slice(0,10)}.csv`);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
 }
 
 function saveWorkoutStats(stats) {
@@ -3156,7 +3191,13 @@ function ProfileScreen({ stats, profile, updateProfile }) {
         <button className="edit-btn pressable" onClick={() => setEditing(true)}>
           Edit Profile
         </button>
-
+        <button 
+  className="edit-btn" 
+  onClick={exportUserDataToCSV}
+  style={{ marginTop: '8px', borderColor: 'rgba(255,255,255,0.2)', color: '#fff' }}
+>
+  EXPORT DATA (CSV)
+</button>
         <div className="section-header">
           <div className="section-title">ACHIEVEMENTS</div>
         </div>
