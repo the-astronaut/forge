@@ -1989,7 +1989,7 @@ function HomeScreen({ stats, profile, customWorkouts, onStartWorkout, onNavigate
             </div>
           </div>
         </div>
-
+ <div className="profile-affirmation">"{affirmation}"</div>
         <div className="section-header">
           <div className="section-title">TODAY'S PLAN</div>
         </div>
@@ -3156,7 +3156,7 @@ function ProfileScreen({ stats, profile, updateProfile }) {
           </div>
           <div className="profile-name">{profile.name || 'SET YOUR NAME'}</div>
           <div className="profile-handle">Member since {memberSince}</div>
-          <div className="profile-affirmation">"{affirmation}"</div>
+         
         </div>
 
         <div className="stats-grid">
