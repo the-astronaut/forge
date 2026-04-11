@@ -1987,9 +1987,9 @@ function HomeScreen({ stats, profile, customWorkouts, onStartWorkout, onNavigate
                 <div className="cyber-center-letter">{initials}</div>
               </div>
             </div>
-          </div>
+          </div><div className="profile-affirmation">"{affirmation}"</div>
         </div>
- <div className="profile-affirmation">"{affirmation}"</div>
+ 
         <div className="section-header">
           <div className="section-title">TODAY'S PLAN</div>
         </div>
