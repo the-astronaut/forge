@@ -1953,6 +1953,7 @@ function HomeScreen({ stats, profile, customWorkouts, onStartWorkout, onNavigate
   const todayWorkout = WORKOUTS[0];
   const initials = profile.name ? profile.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) : 'M';
   const displayName = profile.name ? profile.name.split(' ')[0].toUpperCase() : 'CHAMPION';
+  const [affirmation] = useState(() => AFFIRMATIONS[Math.floor(Math.random() * AFFIRMATIONS.length)]);
   
   // Format active hours as "Xh Ym" or just "Xh" or just "Ym"
   const formatActiveTime = (hours) => {
@@ -3124,7 +3125,7 @@ function ProgressScreen({ workoutLog }) {
 function ProfileScreen({ stats, profile, updateProfile }) {
   const [editing, setEditing] = useState(false);
   const [editForm, setEditForm] = useState(profile);
-  const [affirmation] = useState(() => AFFIRMATIONS[Math.floor(Math.random() * AFFIRMATIONS.length)]);
+  
 
   const handleSave = () => {
     updateProfile(editForm);
