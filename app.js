@@ -299,7 +299,7 @@ const css = `
     0%,100% { text-shadow: 0 0 14px #ffd700, 0 0 28px #ff6b00; }
     50%      { text-shadow: 0 0 6px #ffd700; }
   }
-  .cyber-avatar-wrap { position:relative; width:110px; height:110px; animation: cyber-pulse 3s ease-in-out infinite; }
+  .cyber-avatar-wrap { position:relative; width:110px; height:110px; transform: scale(0.75); transform-origin: center center; animation: cyber-pulse 3s ease-in-out infinite; }
   .cyber-outer-ring {
     position:absolute; inset:0; border-radius:50%;
     background: conic-gradient(#ffd700 0deg, #ff6b00 60deg, transparent 60deg, transparent 90deg,
@@ -1971,10 +1971,8 @@ function HomeScreen({ stats, profile, customWorkouts, onStartWorkout, onNavigate
           <div className="home-header-inner">
             <div>
               <div className="home-greeting">
-                <div className="hey">Good morning 👋</div>
                 <div className="name">{displayName}</div>
               </div>
-    
               <div className="home-date-tag">{new Date().toLocaleDateString('en-US', { weekday:'long', month:'short', day:'numeric' })}</div>
             </div>
             <div className="pressable" onClick={() => onNavigate("profile")} style={{ background:'none', border:'none', cursor:'pointer' }}>
