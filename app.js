@@ -1973,6 +1973,7 @@ function HomeScreen({ stats, profile, customWorkouts, onStartWorkout, onNavigate
                 <div className="hey">Good morning 👋</div>
                 <div className="name">{displayName}</div>
               </div>
+    <div className="profile-affirmation">"{affirmation}"</div>
               <div className="home-date-tag">{new Date().toLocaleDateString('en-US', { weekday:'long', month:'short', day:'numeric' })}</div>
             </div>
             <div className="pressable" onClick={() => onNavigate("profile")} style={{ background:'none', border:'none', cursor:'pointer' }}>
@@ -1987,7 +1988,7 @@ function HomeScreen({ stats, profile, customWorkouts, onStartWorkout, onNavigate
                 <div className="cyber-center-letter">{initials}</div>
               </div>
             </div>
-          </div><div className="profile-affirmation">"{affirmation}"</div>
+          </div>
         </div>
  
         <div className="section-header">
