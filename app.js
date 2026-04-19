@@ -207,41 +207,41 @@ const ACHIEVEMENTS = [
 
 const EXERCISE_LIBRARY = [
   // Chest
-  { id: "e1",  name: "Bench Press",           muscle: "Chest",      defaultWeight: 60,  defaultReps: 8  },
-  { id: "e2",  name: "Incline Dumbbell Press", muscle: "Chest",      defaultWeight: 28,  defaultReps: 10 },
-  { id: "e3",  name: "Cable Fly",              muscle: "Chest",      defaultWeight: 30,  defaultReps: 12 },
-  { id: "e4",  name: "Push-ups",               muscle: "Chest",      defaultWeight: "BW",defaultReps: 15 },
-  { id: "e5",  name: "Chest Dip",              muscle: "Chest",      defaultWeight: "BW",defaultReps: 10 },
+  { id: "e1",  name: "Bench Press",           muscle: "Chest",      defaultWeight: 60,  defaultReps: 8  , isUnilateral: false },
+  { id: "e2",  name: "Incline Dumbbell Press", muscle: "Chest",      defaultWeight: 28,  defaultReps: 10 , isUnilateral: false },
+  { id: "e3",  name: "Cable Fly",              muscle: "Chest",      defaultWeight: 30,  defaultReps: 12 , isUnilateral: false },
+  { id: "e4",  name: "Push-ups",               muscle: "Chest",      defaultWeight: "BW",defaultReps: 15 , isUnilateral: false },
+  { id: "e5",  name: "Chest Dip",              muscle: "Chest",      defaultWeight: "BW",defaultReps: 10 , isUnilateral: false },
   // Back
-  { id: "e6",  name: "Deadlift",               muscle: "Back",       defaultWeight: 100, defaultReps: 5  },
-  { id: "e7",  name: "Pull-ups",               muscle: "Back",       defaultWeight: "BW",defaultReps: 8  },
-  { id: "e8",  name: "Barbell Row",            muscle: "Back",       defaultWeight: 70,  defaultReps: 8  },
-  { id: "e9",  name: "Lat Pulldown",           muscle: "Back",       defaultWeight: 60,  defaultReps: 10 },
-  { id: "e10", name: "Cable Row",              muscle: "Back",       defaultWeight: 55,  defaultReps: 12 },
+  { id: "e6",  name: "Deadlift",               muscle: "Back",       defaultWeight: 100, defaultReps: 5  , isUnilateral: false },
+  { id: "e7",  name: "Pull-ups",               muscle: "Back",       defaultWeight: "BW",defaultReps: 8  , isUnilateral: false },
+  { id: "e8",  name: "Barbell Row",            muscle: "Back",       defaultWeight: 70,  defaultReps: 8  , isUnilateral: false },
+  { id: "e9",  name: "Lat Pulldown",           muscle: "Back",       defaultWeight: 60,  defaultReps: 10 , isUnilateral: false },
+  { id: "e10", name: "Cable Row",              muscle: "Back",       defaultWeight: 55,  defaultReps: 12 , isUnilateral: false },
   // Legs
-  { id: "e11", name: "Back Squat",             muscle: "Legs",       defaultWeight: 80,  defaultReps: 5  },
-  { id: "e12", name: "Romanian Deadlift",      muscle: "Legs",       defaultWeight: 70,  defaultReps: 8  },
-  { id: "e13", name: "Leg Press",              muscle: "Legs",       defaultWeight: 120, defaultReps: 12 },
-  { id: "e14", name: "Walking Lunges",         muscle: "Legs",       defaultWeight: 20,  defaultReps: 16 },
-  { id: "e15", name: "Leg Curl",               muscle: "Legs",       defaultWeight: 40,  defaultReps: 12 },
-  { id: "e16", name: "Calf Raises",            muscle: "Legs",       defaultWeight: 60,  defaultReps: 20 },
+  { id: "e11", name: "Back Squat",             muscle: "Legs",       defaultWeight: 80,  defaultReps: 5  , isUnilateral: false },
+  { id: "e12", name: "Romanian Deadlift",      muscle: "Legs",       defaultWeight: 70,  defaultReps: 8  , isUnilateral: false },
+  { id: "e13", name: "Leg Press",              muscle: "Legs",       defaultWeight: 120, defaultReps: 12 , isUnilateral: false },
+  { id: "e14", name: "Walking Lunges",         muscle: "Legs",       defaultWeight: 20,  defaultReps: 16 , isUnilateral: false },
+  { id: "e15", name: "Leg Curl",               muscle: "Legs",       defaultWeight: 40,  defaultReps: 12 , isUnilateral: false },
+  { id: "e16", name: "Calf Raises",            muscle: "Legs",       defaultWeight: 60,  defaultReps: 20 , isUnilateral: false },
   // Shoulders
-  { id: "e17", name: "Overhead Press",         muscle: "Shoulders",  defaultWeight: 50,  defaultReps: 6  },
-  { id: "e18", name: "Lateral Raises",         muscle: "Shoulders",  defaultWeight: 12,  defaultReps: 15 },
-  { id: "e19", name: "Front Raises",           muscle: "Shoulders",  defaultWeight: 10,  defaultReps: 15 },
-  { id: "e20", name: "Face Pulls",             muscle: "Shoulders",  defaultWeight: 25,  defaultReps: 15 },
+  { id: "e17", name: "Overhead Press",         muscle: "Shoulders",  defaultWeight: 50,  defaultReps: 6  , isUnilateral: false },
+  { id: "e18", name: "Lateral Raises",         muscle: "Shoulders",  defaultWeight: 12,  defaultReps: 15 , isUnilateral: false },
+  { id: "e19", name: "Front Raises",           muscle: "Shoulders",  defaultWeight: 10,  defaultReps: 15 , isUnilateral: false },
+  { id: "e20", name: "Face Pulls",             muscle: "Shoulders",  defaultWeight: 25,  defaultReps: 15 , isUnilateral: false },
   // Arms
-  { id: "e21", name: "Barbell Curl",           muscle: "Biceps",     defaultWeight: 30,  defaultReps: 10 },
-  { id: "e22", name: "Hammer Curl",            muscle: "Biceps",     defaultWeight: 16,  defaultReps: 12 },
-  { id: "e23", name: "Tricep Pushdown",        muscle: "Triceps",    defaultWeight: 25,  defaultReps: 15 },
-  { id: "e24", name: "Skull Crushers",         muscle: "Triceps",    defaultWeight: 30,  defaultReps: 10 },
-  { id: "e25", name: "Dips",                   muscle: "Triceps",    defaultWeight: "BW",defaultReps: 12 },
+  { id: "e21", name: "Barbell Curl",           muscle: "Biceps",     defaultWeight: 30,  defaultReps: 10 , isUnilateral: false },
+  { id: "e22", name: "Hammer Curl",            muscle: "Biceps",     defaultWeight: 16,  defaultReps: 12 , isUnilateral: false },
+  { id: "e23", name: "Tricep Pushdown",        muscle: "Triceps",    defaultWeight: 25,  defaultReps: 15 , isUnilateral: false },
+  { id: "e24", name: "Skull Crushers",         muscle: "Triceps",    defaultWeight: 30,  defaultReps: 10 , isUnilateral: false },
+  { id: "e25", name: "Dips",                   muscle: "Triceps",    defaultWeight: "BW",defaultReps: 12 , isUnilateral: false },
   // Core / Cardio
-  { id: "e26", name: "Plank",                  muscle: "Core",       defaultWeight: "—", defaultReps: 1  },
-  { id: "e27", name: "Crunches",               muscle: "Core",       defaultWeight: "BW",defaultReps: 20 },
-  { id: "e28", name: "Burpees",                muscle: "Cardio",     defaultWeight: "BW",defaultReps: 10 },
-  { id: "e29", name: "Box Jumps",              muscle: "Cardio",     defaultWeight: "BW",defaultReps: 8  },
-  { id: "e30", name: "Kettlebell Swings",      muscle: "Cardio",     defaultWeight: 24,  defaultReps: 15 },
+  { id: "e26", name: "Plank",                  muscle: "Core",       defaultWeight: "—", defaultReps: 1  , isUnilateral: false },
+  { id: "e27", name: "Crunches",               muscle: "Core",       defaultWeight: "BW",defaultReps: 20 , isUnilateral: false },
+  { id: "e28", name: "Burpees",                muscle: "Cardio",     defaultWeight: "BW",defaultReps: 10 , isUnilateral: false },
+  { id: "e29", name: "Box Jumps",              muscle: "Cardio",     defaultWeight: "BW",defaultReps: 8  , isUnilateral: false },
+  { id: "e30", name: "Kettlebell Swings",      muscle: "Cardio",     defaultWeight: 24,  defaultReps: 15 , isUnilateral: false },
 ];
 
 const WORKOUT_CATEGORIES = ["Custom", "Push Day", "Pull Day", "Leg Day", "Full Body", "HIIT", "Recovery"];
@@ -1694,6 +1694,7 @@ function buildSetLog(workout) {
     log[ex.id] = Array.from({ length: ex.sets }, () => ({
       reps: ex.reps,
       weight: parseWeight(ex.weight),
+      isUnilateral: ex.isUnilateral || false,
     }));
   });
   return log;
@@ -2125,6 +2126,7 @@ function CreateWorkoutScreen({ customExercises, onAddCustomExercise, onBack, onS
   const [customExName, setCustomExName] = useState("");
   const [customExMuscle, setCustomExMuscle] = useState("");
   const [customExWeightType, setCustomExWeightType] = useState("kg");
+  const [customExIsUnilateral, setCustomExIsUnilateral] = useState(false);
   const searchRef = useRef(null);
   const customNameRef = useRef(null);
 
@@ -2152,6 +2154,7 @@ function CreateWorkoutScreen({ customExercises, onAddCustomExercise, onBack, onS
       reps: libEx.defaultReps,
       rest: 60,
       weight: libEx.defaultWeight,
+      isUnilateral: libEx.isUnilateral || false,
     }]);
     setSearch("");
     setShowSearch(false);
@@ -2163,7 +2166,6 @@ function CreateWorkoutScreen({ customExercises, onAddCustomExercise, onBack, onS
     if (!trimmedName) return;
 
     const defaultWeight = customExWeightType === "BW" ? "BW" : 0;
-
     const libraryEntry = {
       id: `custom_${Date.now()}`,
       name: trimmedName,
@@ -2171,6 +2173,7 @@ function CreateWorkoutScreen({ customExercises, onAddCustomExercise, onBack, onS
       defaultWeight,
       defaultReps: 10,
       isCustom: true,
+      isUnilateral: customExIsUnilateral,
     };
     onAddCustomExercise(libraryEntry);
 
@@ -2182,15 +2185,21 @@ function CreateWorkoutScreen({ customExercises, onAddCustomExercise, onBack, onS
       reps: 10,
       rest: 60,
       weight: defaultWeight,
+      isUnilateral: customExIsUnilateral,
     }]);
     setCustomExName("");
     setCustomExMuscle("");
     setCustomExWeightType("kg");
+    setCustomExIsUnilateral(false);
     setShowCustomForm(false);
     setShowSearch(false);
   };
 
   const removeExercise = (id) => setExercises(prev => prev.filter(e => e.id !== id));
+
+  const toggleUnilateral = (id) => {
+    setExercises(prev => prev.map(ex => ex.id === id ? { ...ex, isUnilateral: !ex.isUnilateral } : ex));
+  };
 
   const adjustEx = (id, field, delta) => {
     setExercises(prev => prev.map(ex => {
@@ -2232,6 +2241,7 @@ function CreateWorkoutScreen({ customExercises, onAddCustomExercise, onBack, onS
         reps: ex.reps,
         rest: ex.rest,
         weight: typeof ex.weight === "number" ? `${ex.weight}kg` : ex.weight,
+        isUnilateral: ex.isUnilateral || false,
       })),
     };
     onSave(workout);
@@ -2367,6 +2377,21 @@ function CreateWorkoutScreen({ customExercises, onAddCustomExercise, onBack, onS
                       ))}
                     </div>
                   </div>
+                  <div style={{ marginBottom: 10 }}>
+                    <div className="field-label" style={{ marginBottom: 6 }}>Movement Style</div>
+                    <div
+                      className={`muscle-chip pressable ${customExIsUnilateral ? "selected" : ""}`}
+                      style={{ width: "100%", textAlign: "center", padding: "7px 0", boxSizing: "border-box" }}
+                      onClick={() => setCustomExIsUnilateral(v => !v)}
+                    >
+                      {customExIsUnilateral ? "↔ Unilateral (one side at a time)" : "↔ Bilateral (both sides together)"}
+                    </div>
+                    {customExIsUnilateral && (
+                      <div style={{ fontSize: 10, color: "var(--lime)", marginTop: 5, letterSpacing: 0.3 }}>
+                        Reps will be performed per side. Set count stays the same.
+                      </div>
+                    )}
+                  </div>
                   <div style={{ display: "flex", gap: 8 }}>
                     <button
                       className="pressable"
@@ -2462,6 +2487,43 @@ function CreateWorkoutScreen({ customExercises, onAddCustomExercise, onBack, onS
                     </div>
                   </div>
                 ))}
+              </div>
+
+              <div
+                className="pressable"
+                onClick={() => toggleUnilateral(ex.id)}
+                style={{
+                  margin: "0 14px 12px",
+                  padding: "8px 12px",
+                  borderRadius: 10,
+                  background: ex.isUnilateral ? "rgba(198,241,53,0.08)" : "rgba(255,255,255,0.03)",
+                  border: `1px solid ${ex.isUnilateral ? "rgba(198,241,53,0.3)" : "var(--border)"}`,
+                  display: "flex", alignItems: "center", justifyContent: "space-between",
+                  cursor: "pointer", transition: "all 0.2s",
+                }}
+              >
+                <div>
+                  <div style={{ fontSize: 11, fontWeight: 600, color: ex.isUnilateral ? "var(--lime)" : "var(--gray)" }}>
+                    {ex.isUnilateral ? "↔ Unilateral" : "↔ Bilateral"}
+                  </div>
+                  <div style={{ fontSize: 9, color: "#555", marginTop: 1 }}>
+                    {ex.isUnilateral ? `${ex.reps} reps/side · ${ex.sets} sets total` : "Both sides together"}
+                  </div>
+                </div>
+                <div style={{
+                  width: 34, height: 20, borderRadius: 10,
+                  background: ex.isUnilateral ? "var(--lime)" : "var(--surface)",
+                  border: `1px solid ${ex.isUnilateral ? "var(--lime)" : "var(--border)"}`,
+                  position: "relative", transition: "all 0.2s", flexShrink: 0,
+                }}>
+                  <div style={{
+                    position: "absolute", top: 2,
+                    left: ex.isUnilateral ? 16 : 2,
+                    width: 14, height: 14, borderRadius: 7,
+                    background: ex.isUnilateral ? "var(--black)" : "#555",
+                    transition: "left 0.2s",
+                  }} />
+                </div>
               </div>
             </div>
           ))}
@@ -2575,6 +2637,11 @@ function WorkoutScreen({
                     <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 22, color: isDone ? "var(--gray)" : "var(--white)", letterSpacing: 0.5, lineHeight: 1 }}>
                       {ex.name}
                     </div>
+                    {ex.isUnilateral && (
+                      <div style={{ display: "inline-flex", alignItems: "center", gap: 4, marginTop: 4, background: "rgba(198,241,53,0.08)", border: "1px solid rgba(198,241,53,0.2)", borderRadius: 6, padding: "2px 7px" }}>
+                        <span style={{ fontSize: 9, fontWeight: 700, color: "var(--lime)", letterSpacing: 0.5 }}>↔ EACH SIDE</span>
+                      </div>
+                    )}
                   </div>
                   <div style={{ textAlign: "right" }}>
                     <div style={{
@@ -2621,8 +2688,13 @@ function WorkoutScreen({
                           style={{ width: 24, height: 24, borderRadius: 7, background: "rgba(255,255,255,0.06)", border: "1px solid var(--border)", display: "flex", alignItems: "center", justifyContent: "center", cursor: done ? "default" : "pointer", fontSize: 13, color: "var(--gray-light)", opacity: done ? 0.3 : 1, userSelect: "none" }}
                           onClick={() => !done && onAdjust(ex.id, sIdx, "reps", -1)}
                         >−</div>
-                        <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 13, fontWeight: 700, color: done ? "var(--gray)" : isActiveSet ? "var(--white)" : "var(--gray-light)", minWidth: 26, textAlign: "center" }}>
-                          {set.reps}
+                        <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                          <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 13, fontWeight: 700, color: done ? "var(--gray)" : isActiveSet ? "var(--white)" : "var(--gray-light)", minWidth: 26, textAlign: "center" }}>
+                            {set.reps}
+                          </div>
+                          {ex.isUnilateral && (
+                            <div style={{ fontSize: 7, color: "var(--lime)", fontWeight: 700, letterSpacing: 0.3, marginTop: -1 }}>/side</div>
+                          )}
                         </div>
                         <div
                           style={{ width: 24, height: 24, borderRadius: 7, background: "rgba(255,255,255,0.06)", border: "1px solid var(--border)", display: "flex", alignItems: "center", justifyContent: "center", cursor: done ? "default" : "pointer", fontSize: 13, color: "var(--gray-light)", opacity: done ? 0.3 : 1, userSelect: "none" }}
@@ -2720,7 +2792,7 @@ function WorkoutScreen({
               <div className="rest-next-label">Up Next</div>
               <div className="rest-next-name">{restNextEx.name}</div>
               <div className="rest-next-detail">
-                Set {(restNextSetIdx || 0) + 1} · {setLog[restNextEx.id]?.[restNextSetIdx]?.reps} reps
+                Set {(restNextSetIdx || 0) + 1} · {setLog[restNextEx.id]?.[restNextSetIdx]?.reps} reps{restNextEx.isUnilateral ? " / side" : ""}
                 {typeof setLog[restNextEx.id]?.[restNextSetIdx]?.weight === "number"
                   ? ` · ${setLog[restNextEx.id]?.[restNextSetIdx]?.weight}kg`
                   : setLog[restNextEx.id]?.[restNextSetIdx]?.weight !== "—" ? ` · ${setLog[restNextEx.id]?.[restNextSetIdx]?.weight}` : ""}
