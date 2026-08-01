@@ -3,7 +3,22 @@ const { useState, useEffect, useRef, useCallback, useMemo } = React;
 // ─── DATA ───────────────────────────────────────────────────────────────────
 
 const WORKOUTS = [
-  
+  {
+    id: 1,
+    name: "BURN & BUILD",
+    category: "HIIT",
+    emoji: "⚡",
+    duration: 30,
+    difficulty: "Intermediate",
+    color: "#FF8C42",
+    bg: "linear-gradient(160deg, #2a1a0a, #3d1000)",
+    exercises: [
+      { id: 1, name: "Burpees",            muscle: "Cardio", sets: 4, reps: 10, rest: 30, weight: "BW"  },
+      { id: 2, name: "Box Jumps",          muscle: "Cardio", sets: 4, reps: 8,  rest: 45, weight: "BW"  },
+      { id: 3, name: "Mountain Climbers",  muscle: "Core",   sets: 3, reps: 20, rest: 30, weight: "BW"  },
+      { id: 4, name: "Kettlebell Swings",  muscle: "Cardio", sets: 3, reps: 15, rest: 45, weight: "24kg"},
+    ],
+  },
 ];
 
 const INITIAL_STATS = {
