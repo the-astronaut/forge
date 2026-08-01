@@ -3,7 +3,7 @@ const { useState, useEffect, useRef, useCallback, useMemo } = React;
 // ─── DATA ───────────────────────────────────────────────────────────────────
 
 const WORKOUTS = [
-  {  },
+  
 ];
 
 const INITIAL_STATS = {
