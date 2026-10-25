@@ -212,6 +212,113 @@ function loadCustomExercises() {
 function saveCustomExercises(customExercises) {
   localStorage.setItem('forgeCustomExercises', JSON.stringify(customExercises));
 }
+
+// ─── SESSION RESUME, LAST-TIME HINTS, WAKE LOCK ──────────────────────────────
+
+const SESSION_MAX_AGE_MS = 12 * 60 * 60 * 1000; // ignore saved sessions older than 12h
+const ACTIVE_SESSION_KEY = 'forgeActiveSession';
+const FREESTYLE_SESSION_KEY = 'forgeFreestyleSession';
+
+function loadWorkoutLog() {
+  try {
+    const saved = localStorage.getItem('forgeWorkoutLog');
+    return saved ? JSON.parse(saved) : [];
+  } catch (e) { return []; }
+}
+
+function saveWorkoutLog(log) {
+  try { localStorage.setItem('forgeWorkoutLog', JSON.stringify(log)); } catch (e) {}
+}
+
+function loadTimedSession(key) {
+  try {
+    const raw = localStorage.getItem(key);
+    if (!raw) return null;
+    const sess = JSON.parse(raw);
+    if (!sess || !sess.savedAt || Date.now() - sess.savedAt > SESSION_MAX_AGE_MS) {
+      localStorage.removeItem(key);
+      return null;
+    }
+    return sess;
+  } catch (e) { return null; }
+}
+
+function saveTimedSession(key, data) {
+  try { localStorage.setItem(key, JSON.stringify({ ...data, savedAt: Date.now() })); } catch (e) {}
+}
+
+function clearTimedSession(key) {
+  try { localStorage.removeItem(key); } catch (e) {}
+}
+
+const loadActiveSession = () => loadTimedSession(ACTIVE_SESSION_KEY);
+const saveActiveSession = (data) => saveTimedSession(ACTIVE_SESSION_KEY, data);
+const clearActiveSession = () => clearTimedSession(ACTIVE_SESSION_KEY);
+const loadFreestyleSession = () => loadTimedSession(FREESTYLE_SESSION_KEY);
+const saveFreestyleSession = (data) => saveTimedSession(FREESTYLE_SESSION_KEY, data);
+const clearFreestyleSession = () => clearTimedSession(FREESTYLE_SESSION_KEY);
+
+// Most recent logged sets per exercise name, built from the workout log.
+function buildLastMap(workoutLog) {
+  const map = {};
+  [...(workoutLog || [])]
+    .sort((a, b) => String(a.date).localeCompare(String(b.date)))
+    .forEach(entry => {
+      (entry.exercises || []).forEach(ex => {
+        map[ex.name] = { date: entry.date, sets: ex.sets, setsLogged: ex.setsLogged, maxWeight: ex.maxWeight };
+      });
+    });
+  return map;
+}
+
+// "3×8 @ 60kg · 3d ago"
+function formatLastHint(info) {
+  if (!info) return null;
+  const sets = Array.isArray(info.sets) ? info.sets : [];
+  let summary;
+  if (sets.length) {
+    const first = sets[0];
+    const same = sets.every(st => st.reps === first.reps && st.weight === first.weight);
+    if (same) {
+      const w = typeof first.weight === "number" ? ` @ ${first.weight}kg` : first.weight === "BW" ? " BW" : "";
+      summary = `${sets.length}×${first.reps}${w}`;
+    } else {
+      const shown = sets.slice(0, 4)
+        .map(st => typeof st.weight === "number" ? `${st.reps}×${st.weight}` : `${st.reps}${st.weight === "BW" ? " BW" : ""}`)
+        .join(" · ");
+      summary = (sets.length > 4 ? `${shown} +${sets.length - 4}` : shown) + (sets.some(st => typeof st.weight === "number") ? " kg" : "");
+    }
+  } else {
+    summary = `${info.setsLogged} set${info.setsLogged !== 1 ? "s" : ""}${info.maxWeight ? ` · top ${info.maxWeight}kg` : ""}`;
+  }
+  const days = Math.floor((Date.now() - new Date(info.date).getTime()) / 86400000);
+  const ago = days <= 0 ? "today" : days === 1 ? "yesterday" : `${days}d ago`;
+  return `${summary} · ${ago}`;
+}
+
+// Keeps the phone screen on while active (needs HTTPS; silently skipped if unsupported).
+function useWakeLock(active) {
+  useEffect(() => {
+    if (!active || typeof navigator === "undefined" || !("wakeLock" in navigator)) return;
+    let lock = null;
+    let cancelled = false;
+    const acquire = async () => {
+      try {
+        const l = await navigator.wakeLock.request("screen");
+        if (cancelled) { l.release().catch(() => {}); } else { lock = l; }
+      } catch (e) {}
+    };
+    const onVisible = () => { if (document.visibilityState === "visible") acquire(); };
+    acquire();
+    document.addEventListener("visibilitychange", onVisible);
+    return () => {
+      cancelled = true;
+      document.removeEventListener("visibilitychange", onVisible);
+      if (lock) lock.release().catch(() => {});
+    };
+  }, [active]);
+}
+
 const ACHIEVEMENTS = [
   { id: 1,  icon: "💪", name: "Strong Start", desc: "Complete your first workout",        metric: "totalWorkouts", target: 1     },
   { id: 2,  icon: "🏆", name: "Century Club",  desc: "Complete 100 workouts",              metric: "totalWorkouts", target: 100   },
@@ -1795,7 +1902,7 @@ function ForgeApp() {
   const [workoutPartial, setWorkoutPartial] = useState(false);
   const [workoutDuration, setWorkoutDuration] = useState(0);
   const [stats, setStats] = useState(() => loadWorkoutStats());
-  const [workoutLog, setWorkoutLog] = useState([]);
+  const [workoutLog, setWorkoutLog] = useState(() => loadWorkoutLog());
   const [filterCategory, setFilterCategory] = useState("All");
   const [customWorkouts, setCustomWorkouts] = useState(() => loadCustomWorkouts());
   const [customExercises, setCustomExercises] = useState(() => loadCustomExercises());
@@ -1816,6 +1923,37 @@ useEffect(() => {
 useEffect(() => {
   saveCustomExercises(customExercises);
 }, [customExercises]);
+useEffect(() => {
+  saveWorkoutLog(workoutLog);
+}, [workoutLog]);
+const lastByExercise = useMemo(() => buildLastMap(workoutLog), [workoutLog]);
+const durationValRef = useRef(0);
+durationValRef.current = workoutDuration;
+
+// Save the planned workout in progress so a refresh / closed app doesn't wipe it
+useEffect(() => {
+  if (tab === "workout" && activeWorkout && !showComplete) {
+    saveActiveSession({ activeWorkout, setLog, setDone, focusExId, workoutDuration: durationValRef.current });
+  } else if (showComplete) {
+    clearActiveSession();
+  }
+}, [tab, activeWorkout, setLog, setDone, focusExId, showComplete]);
+
+useWakeLock(tab === "workout" && !!activeWorkout && !showComplete);
+
+const resumeWorkout = useCallback(() => {
+  const sess = loadActiveSession();
+  if (!sess || !sess.activeWorkout) return;
+  setActiveWorkout(sess.activeWorkout);
+  setSetLog(sess.setLog || {});
+  setSetDone(sess.setDone || {});
+  setFocusExId(sess.focusExId ?? null);
+  setRestActive(false);
+  setShowComplete(false);
+  setWorkoutPartial(false);
+  setWorkoutDuration(sess.workoutDuration || 0);
+  setTab("workout");
+}, []);
   const timerRef = useRef(null);
   const durationRef = useRef(null);
 
@@ -1859,13 +1997,16 @@ useEffect(() => {
       .map(ex => {
         const doneSets = (doneMap[ex.id] || []).filter(Boolean).length;
         if (doneSets === 0) return null;
+        const doneSetObjs = (logMap[ex.id] || [])
+          .filter((_, i) => doneMap[ex.id]?.[i])
+          .map(st => ({ reps: st.reps, weight: st.weight }));
         const weights = (logMap[ex.id] || [])
           .filter((_, i) => doneMap[ex.id]?.[i])
           .map(s => typeof s.weight === "number" ? s.weight : null)
           .filter(w => w !== null);
         const avgWeight = weights.length ? weights.reduce((a, b) => a + b, 0) / weights.length : null;
         const maxWeight = weights.length ? Math.max(...weights) : null;
-        return { name: ex.name, muscle: ex.muscle || "Other", setsLogged: doneSets, avgWeight, maxWeight };
+        return { name: ex.name, muscle: ex.muscle || "Other", setsLogged: doneSets, avgWeight, maxWeight, sets: doneSetObjs };
       })
       .filter(Boolean);
     return { date: new Date().toISOString(), workoutName: workout.name, exercises };
@@ -1952,13 +2093,14 @@ useEffect(() => {
   }, [activeWorkout, setDone, setLog, buildLogEntry]);
 
   const finishFreestyle = useCallback((sessionExercises, duration) => {
+    clearFreestyleSession();
     const loggedExercises = sessionExercises
       .filter(ex => ex.sets.length > 0)
       .map(ex => {
         const weights = ex.sets.map(s => typeof s.weight === "number" ? s.weight : null).filter(w => w !== null);
         const avgWeight = weights.length ? weights.reduce((a, b) => a + b, 0) / weights.length : null;
         const maxWeight = weights.length ? Math.max(...weights) : null;
-        return { name: ex.name, muscle: ex.muscle || "Other", setsLogged: ex.sets.length, avgWeight, maxWeight };
+        return { name: ex.name, muscle: ex.muscle || "Other", setsLogged: ex.sets.length, avgWeight, maxWeight, sets: ex.sets.map(st => ({ reps: st.reps, weight: st.weight })) };
       });
 
     if (loggedExercises.length === 0) {
@@ -2007,7 +2149,7 @@ useEffect(() => {
       <style>{css}</style>
       <div className="app-shell">
         <div className="phone">
-          {tab === "home" && <HomeScreen stats={stats} profile={profile} customWorkouts={customWorkouts} onStartWorkout={startWorkout} onNavigate={setTab} onFreestyle={() => setTab("freestyle")} />}
+          {tab === "home" && <HomeScreen stats={stats} profile={profile} customWorkouts={customWorkouts} onStartWorkout={startWorkout} onNavigate={setTab} onFreestyle={() => setTab("freestyle")} onResume={resumeWorkout} />}
           {tab === "explore" && (
             <ExploreScreen
               workouts={filteredWorkouts}
@@ -2045,12 +2187,14 @@ useEffect(() => {
               customExercises={customExercises}
               onAddCustomExercise={(ex) => setCustomExercises(prev => [...prev, ex])}
               onFinish={finishFreestyle}
-              onCancel={() => setTab("home")}
+              lastByExercise={lastByExercise}
+              onCancel={() => { clearFreestyleSession(); setTab("home"); }}
             />
           )}
           {tab === "workout" && activeWorkout && (
             <WorkoutScreen
               workout={activeWorkout}
+              lastByExercise={lastByExercise}
               setLog={setLog}
               setDone={setDone}
               currentEx={currentEx}
@@ -2072,8 +2216,8 @@ useEffect(() => {
               onSkipRest={skipRest}
               onAddRest={addRest}
               onFinishEarly={finishEarly}
-              onCancel={() => { setRestActive(false); setActiveWorkout(null); setWorkoutPartial(false); setFocusExId(null); setTab("home"); }}
-              onDone={() => { setRestActive(false); setActiveWorkout(null); setWorkoutPartial(false); setFocusExId(null); setTab("home"); }}
+              onCancel={() => { setRestActive(false); setActiveWorkout(null); setWorkoutPartial(false); setFocusExId(null); clearActiveSession(); setTab("home"); }}
+              onDone={() => { setRestActive(false); setActiveWorkout(null); setWorkoutPartial(false); setFocusExId(null); clearActiveSession(); setTab("home"); }}
             />
           )}
           {tab === "progress" && <ProgressScreen workoutLog={workoutLog} />}
@@ -2097,8 +2241,19 @@ useEffect(() => {
 
 // ─── HOME SCREEN ─────────────────────────────────────────────────────────────
 
-function HomeScreen({ stats, profile, customWorkouts, onStartWorkout, onNavigate, onFreestyle }) {
+function HomeScreen({ stats, profile, customWorkouts, onStartWorkout, onNavigate, onFreestyle, onResume }) {
   const todayWorkout = WORKOUTS[0];
+  const savedWorkout = loadActiveSession();
+  const savedDoneSets = savedWorkout
+    ? Object.values(savedWorkout.setDone || {}).reduce((a, arr) => a + arr.filter(Boolean).length, 0)
+    : 0;
+  const savedTotalSets = savedWorkout && savedWorkout.activeWorkout
+    ? savedWorkout.activeWorkout.exercises.reduce((a, e) => a + e.sets, 0)
+    : 0;
+  const savedFreestyle = loadFreestyleSession();
+  const savedFreestyleSets = savedFreestyle
+    ? (savedFreestyle.sessionExercises || []).reduce((a, e) => a + e.sets.length, 0)
+    : 0;
   const initials = profile.name ? profile.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) : 'M';
   const displayName = profile.name ? profile.name.split(' ')[0].toUpperCase() : 'CHAMPION';
   const [affirmation] = useState(() => AFFIRMATIONS[Math.floor(Math.random() * AFFIRMATIONS.length)]);
@@ -2138,6 +2293,34 @@ function HomeScreen({ stats, profile, customWorkouts, onStartWorkout, onNavigate
           </div>
         </div>
  <div className="profile-affirmation">"{affirmation}"</div>
+        {savedWorkout && savedWorkout.activeWorkout && savedDoneSets > 0 && (
+          <div
+            className="pressable"
+            onClick={onResume}
+            style={{ margin: "14px 24px 0", background: "rgba(255,140,66,0.10)", border: "1.5px solid rgba(255,140,66,0.4)", borderRadius: 18, padding: "14px 16px", display: "flex", alignItems: "center", gap: 14, cursor: "pointer" }}
+          >
+            <div style={{ width: 46, height: 46, borderRadius: 14, background: "rgba(255,140,66,0.15)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, flexShrink: 0 }}>▶</div>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 19, color: "var(--white)", letterSpacing: 0.5, lineHeight: 1.1 }}>RESUME WORKOUT</div>
+              <div style={{ fontSize: 11, color: "var(--gray)", marginTop: 2 }}>{savedWorkout.activeWorkout.name} · {savedDoneSets}/{savedTotalSets} sets done</div>
+            </div>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" strokeWidth="2.5" strokeLinecap="round"><path d="M9 18l6-6-6-6"/></svg>
+          </div>
+        )}
+        {savedFreestyle && savedFreestyleSets > 0 && (
+          <div
+            className="pressable"
+            onClick={onFreestyle}
+            style={{ margin: "14px 24px 0", background: "rgba(255,140,66,0.10)", border: "1.5px solid rgba(255,140,66,0.4)", borderRadius: 18, padding: "14px 16px", display: "flex", alignItems: "center", gap: 14, cursor: "pointer" }}
+          >
+            <div style={{ width: 46, height: 46, borderRadius: 14, background: "rgba(255,140,66,0.15)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, flexShrink: 0 }}>▶</div>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 19, color: "var(--white)", letterSpacing: 0.5, lineHeight: 1.1 }}>RESUME FREESTYLE</div>
+              <div style={{ fontSize: 11, color: "var(--gray)", marginTop: 2 }}>{savedFreestyleSets} set{savedFreestyleSets !== 1 ? "s" : ""} logged so far</div>
+            </div>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" strokeWidth="2.5" strokeLinecap="round"><path d="M9 18l6-6-6-6"/></svg>
+          </div>
+        )}
         <div
           className="pressable"
           onClick={onFreestyle}
@@ -2997,19 +3180,20 @@ function CreateWorkoutScreen({ customExercises, customWorkouts, onAddCustomExerc
 
 // ─── FREESTYLE ("BUILD ON THE FLY") SCREEN ──────────────────────────────────
 
-function FreestyleWorkoutScreen({ customExercises, onAddCustomExercise, onFinish, onCancel }) {
+function FreestyleWorkoutScreen({ customExercises, onAddCustomExercise, onFinish, onCancel, lastByExercise }) {
+  const [restored] = useState(() => loadFreestyleSession());
   // sessionExercises: [{ id, name, muscle, isUnilateral, sets: [{reps, weight}] }]
-  const [sessionExercises, setSessionExercises] = useState([]);
-  const [activeExId, setActiveExId] = useState(null);
-  const [draftReps, setDraftReps] = useState(10);
-  const [draftWeight, setDraftWeight] = useState(20);
+  const [sessionExercises, setSessionExercises] = useState(restored?.sessionExercises || []);
+  const [activeExId, setActiveExId] = useState(restored?.activeExId ?? null);
+  const [draftReps, setDraftReps] = useState(restored?.draftReps ?? 10);
+  const [draftWeight, setDraftWeight] = useState(restored?.draftWeight ?? 20);
   const [search, setSearch] = useState("");
-  const [showSearch, setShowSearch] = useState(true);
+  const [showSearch, setShowSearch] = useState(!(restored && (restored.sessionExercises || []).length > 0));
   const [showCustomForm, setShowCustomForm] = useState(false);
   const [customExName, setCustomExName] = useState("");
   const [customExMuscle, setCustomExMuscle] = useState("");
   const [customExWeightType, setCustomExWeightType] = useState("kg");
-  const [duration, setDuration] = useState(0);
+  const [duration, setDuration] = useState(restored?.duration || 0);
   const [showCancelConfirm, setShowCancelConfirm] = useState(false);
   const durationRef = useRef(null);
   const customNameRef = useRef(null);
@@ -3018,6 +3202,17 @@ function FreestyleWorkoutScreen({ customExercises, onAddCustomExercise, onFinish
     durationRef.current = setInterval(() => setDuration(d => d + 1), 1000);
     return () => clearInterval(durationRef.current);
   }, []);
+
+  useWakeLock(true);
+
+  // Save the session after every change so a refresh / closed app can resume it
+  const fsDurationRef = useRef(0);
+  fsDurationRef.current = duration;
+  useEffect(() => {
+    if (sessionExercises.length > 0) {
+      saveFreestyleSession({ sessionExercises, activeExId, draftReps, draftWeight, duration: fsDurationRef.current });
+    }
+  }, [sessionExercises, activeExId, draftReps, draftWeight]);
 
   const formatDuration = s => `${Math.floor(s / 60)}m ${s % 60}s`;
 
@@ -3207,6 +3402,9 @@ function FreestyleWorkoutScreen({ customExercises, onAddCustomExercise, onFinish
               <div>
                 <div style={{ fontSize: 9, textTransform: "uppercase", letterSpacing: 2, color: "var(--lime)", fontWeight: 700, marginBottom: 2 }}>Logging Now</div>
                 <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 24, color: "var(--white)", letterSpacing: 0.5, lineHeight: 1 }}>{activeEx.name}</div>
+                {lastByExercise?.[activeEx.name] && (
+                  <div style={{ fontSize: 10, color: "var(--gray)", marginTop: 4 }}>Last · <span style={{ color: "var(--gray-light)" }}>{formatLastHint(lastByExercise[activeEx.name])}</span></div>
+                )}
               </div>
               <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 12, color: "var(--gray)" }}>{activeEx.sets.length} set{activeEx.sets.length !== 1 ? "s" : ""}</div>
             </div>
@@ -3355,7 +3553,7 @@ function WorkoutScreen({
   restActive, restSeconds, restMax, restNextEx, restNextSetIdx,
   showComplete, workoutPartial, workoutDuration,
   formatTime, formatDuration,
-  onLogSet, onSelectExercise, onAdjust, onSkipRest, onAddRest, onFinishEarly, onCancel, onDone
+  onLogSet, onSelectExercise, onAdjust, onSkipRest, onAddRest, onFinishEarly, onCancel, onDone, lastByExercise
 }) {
   const restRingCirc = 502;
   const restOffset = restRingCirc - (restRingCirc * (restMax > 0 ? restSeconds / restMax : 0));
@@ -3419,6 +3617,9 @@ function WorkoutScreen({
                     <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 22, color: isDone ? "var(--gray)" : "var(--white)", letterSpacing: 0.5, lineHeight: 1 }}>
                       {ex.name}
                     </div>
+                    {!isDone && lastByExercise?.[ex.name] && (
+                      <div style={{ fontSize: 10, color: "var(--gray)", marginTop: 4 }}>Last · <span style={{ color: "var(--gray-light)" }}>{formatLastHint(lastByExercise[ex.name])}</span></div>
+                    )}
                     {ex.isUnilateral && (
                       <div style={{ display: "inline-flex", alignItems: "center", gap: 4, marginTop: 4, background: "rgba(198,241,53,0.08)", border: "1px solid rgba(198,241,53,0.2)", borderRadius: 6, padding: "2px 7px" }}>
                         <span style={{ fontSize: 9, fontWeight: 700, color: "var(--lime)", letterSpacing: 0.5 }}>↔ EACH SIDE</span>
