@@ -7,6 +7,7 @@
   <meta name="background-color" content="#0A0A0A" />
   <meta name="description" content="Forge - Elite Workout Tracker" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="Forge" />
   
@@ -27,22 +28,21 @@
   <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
   
-  <!-- Babel for JSX -->
- <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <!-- Babel for JSX (pinned to 7.x so the classic JSX runtime is used; bump ?v= below after each app.js update) -->
+  <script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
 
-<script type="text/babel" data-presets="react" src="app.js"></script>
+  <!-- app.js is loaded ONCE, here -->
+  <script type="text/babel" data-presets="react" src="app.js?v=2"></script>
 
-<script type="text/babel" data-presets="react">
-  // Move your SW registration here so Babel handles it, 
-  // or keep it in a standard <script> but ensure it doesn't conflict.
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('sw.js')
-        .then(reg => console.log('SW Registered', reg.scope))
-        .catch(err => console.log('SW Failed', err));
-    });
-  }
-</script>
+  <script type="text/babel" data-presets="react">
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js')
+          .then(reg => console.log('SW Registered', reg.scope))
+          .catch(err => console.log('SW Failed', err));
+      });
+    }
+  </script>
   
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600&family=Space+Mono:wght@400;700&display=swap');
@@ -143,10 +143,7 @@
   </div>
   <div id="root"></div>
   
-  <script type="text/babel" src="app.js"></script>
-  
   <script>
-     
     // Hide loading screen when app mounts
     window.addEventListener('load', () => {
       setTimeout(() => {
