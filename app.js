@@ -194,75 +194,14 @@ function exportUserDataToCSV() {
 function saveWorkoutStats(stats) {
   localStorage.setItem('forgeStats', JSON.stringify(stats));
 }
-
-function loadCustomWorkouts() {
-  const saved = localStorage.getItem('forgeCustomWorkouts');
-  return saved ? JSON.parse(saved) : [];
-}
-
-function saveCustomWorkouts(customWorkouts) {
-  localStorage.setItem('forgeCustomWorkouts', JSON.stringify(customWorkouts));
-}
-
-function loadCustomExercises() {
-  const saved = localStorage.getItem('forgeCustomExercises');
-  return saved ? JSON.parse(saved) : [];
-}
-
-function saveCustomExercises(customExercises) {
-  localStorage.setItem('forgeCustomExercises', JSON.stringify(customExercises));
-}
 const ACHIEVEMENTS = [
-  { id: 1,  icon: "💪", name: "Strong Start", desc: "Complete your first workout",        metric: "totalWorkouts", target: 1     },
-  { id: 2,  icon: "🏆", name: "Century Club",  desc: "Complete 100 workouts",              metric: "totalWorkouts", target: 100   },
-  { id: 3,  icon: "💎", name: "Diamond Lifter",desc: "Complete 250 workouts",              metric: "totalWorkouts", target: 250   },
-  { id: 4,  icon: "⚡", name: "Speed Demon",   desc: "5 workouts in a single week",        metric: "workoutsThisWeek", target: 5  },
-  { id: 5,  icon: "🚀", name: "Perfect Week",  desc: "7 workouts in a single week",        metric: "workoutsThisWeek", target: 7  },
-  { id: 6,  icon: "🔥", name: "On Fire",       desc: "Reach a 7-day streak",               metric: "streak", target: 7           },
-  { id: 7,  icon: "🌋", name: "Unstoppable",   desc: "Reach a 30-day streak",              metric: "streak", target: 30          },
-  { id: 8,  icon: "🦁", name: "Iron Lion",     desc: "Lift 10,000kg total volume",         metric: "totalVolume", target: 10000, unit: "kg" },
-  { id: 9,  icon: "🌙", name: "Night Owl",     desc: "Log a workout after 10pm",           metric: "nightOwl", target: 1         },
-  { id: 10, icon: "🌅", name: "Early Bird",    desc: "Log a workout before 6am",           metric: "earlyBird", target: 1        },
-  { id: 11, icon: "🏗️", name: "Architect",     desc: "Create your first custom workout",   metric: "customWorkoutCount", target: 1 },
-  { id: 12, icon: "🌈", name: "Well Rounded",  desc: "Train 5 muscle groups in one week",  metric: "weekMuscleCount", target: 5   },
+  { id: 1, icon: "🏆", name: "Century Club", desc: "Complete 100 workouts", earned: false },
+  { id: 2, icon: "💪", name: "Strong Start", desc: "First workout completed", earned: false },
+  { id: 3, icon: "💎", name: "Diamond Lifter", desc: "250 total workouts", earned: false },
+  { id: 4, icon: "⚡", name: "Speed Demon", desc: "5 workouts in a week", earned: false },
+  { id: 5, icon: "🦁", name: "Iron Lion", desc: "Lift 10,000kg total", earned: false },
+  { id: 6, icon: "🌙", name: "Night Owl", desc: "Workout after 10pm", earned: false },
 ];
-
-// Computes live earned/progress status for each achievement from real app data.
-function getAchievementStatus(stats, workoutLog, customWorkouts) {
-  const now = new Date();
-  const weekAgo = new Date(now); weekAgo.setDate(weekAgo.getDate() - 7);
-  const thisWeekLog = (workoutLog || []).filter(w => new Date(w.date) >= weekAgo);
-
-  const totalVolume = (workoutLog || []).reduce((sum, w) =>
-    sum + w.exercises.reduce((s, e) => s + ((e.avgWeight || 0) * e.setsLogged), 0), 0);
-
-  const nightOwl = (workoutLog || []).some(w => new Date(w.date).getHours() >= 22);
-  const earlyBird = (workoutLog || []).some(w => new Date(w.date).getHours() < 6);
-
-  const weekMuscles = new Set();
-  thisWeekLog.forEach(w => w.exercises.forEach(e => weekMuscles.add(e.muscle || "Other")));
-
-  const metrics = {
-    totalWorkouts: stats.totalWorkouts || 0,
-    workoutsThisWeek: stats.workoutsThisWeek || 0,
-    streak: stats.streak || 0,
-    totalVolume: Math.round(totalVolume),
-    nightOwl: nightOwl ? 1 : 0,
-    earlyBird: earlyBird ? 1 : 0,
-    customWorkoutCount: (customWorkouts || []).length,
-    weekMuscleCount: weekMuscles.size,
-  };
-
-  return ACHIEVEMENTS.map(a => {
-    const value = metrics[a.metric] || 0;
-    return {
-      ...a,
-      value,
-      earned: value >= a.target,
-      progress: Math.max(0, Math.min(1, value / a.target)),
-    };
-  });
-}
 
 // ─── EXERCISE LIBRARY ────────────────────────────────────────────────────────
 
@@ -1752,19 +1691,11 @@ function parseWeight(w) {
 function buildSetLog(workout) {
   const log = {};
   workout.exercises.forEach(ex => {
-    if (ex.setConfigs && ex.setConfigs.length) {
-      log[ex.id] = ex.setConfigs.map(sc => ({
-        reps: sc.reps,
-        weight: typeof sc.weight === "number" ? sc.weight : parseWeight(sc.weight),
-        isUnilateral: ex.isUnilateral || false,
-      }));
-    } else {
-      log[ex.id] = Array.from({ length: ex.sets }, () => ({
-        reps: ex.reps,
-        weight: parseWeight(ex.weight),
-        isUnilateral: ex.isUnilateral || false,
-      }));
-    }
+    log[ex.id] = Array.from({ length: ex.sets }, () => ({
+      reps: ex.reps,
+      weight: parseWeight(ex.weight),
+      isUnilateral: ex.isUnilateral || false,
+    }));
   });
   return log;
 }
@@ -1772,8 +1703,7 @@ function buildSetLog(workout) {
 function buildSetDone(workout) {
   const done = {};
   workout.exercises.forEach(ex => {
-    const count = ex.setConfigs && ex.setConfigs.length ? ex.setConfigs.length : ex.sets;
-    done[ex.id] = Array(count).fill(false);
+    done[ex.id] = Array(ex.sets).fill(false);
   });
   return done;
 }
@@ -1796,10 +1726,9 @@ function ForgeApp() {
   const [stats, setStats] = useState(() => loadWorkoutStats());
   const [workoutLog, setWorkoutLog] = useState([]);
   const [filterCategory, setFilterCategory] = useState("All");
-  const [customWorkouts, setCustomWorkouts] = useState(() => loadCustomWorkouts());
-  const [customExercises, setCustomExercises] = useState(() => loadCustomExercises());
+  const [customWorkouts, setCustomWorkouts] = useState([]);
+  const [customExercises, setCustomExercises] = useState([]);
   const [profile, setProfile] = useState(loadProfile);
-  const [editingWorkout, setEditingWorkout] = useState(null);
 
   const updateProfile = (newProfile) => {
     setProfile(newProfile);
@@ -1809,12 +1738,6 @@ function ForgeApp() {
 useEffect(() => {
   saveWorkoutStats(stats);
 }, [stats]);
-useEffect(() => {
-  saveCustomWorkouts(customWorkouts);
-}, [customWorkouts]);
-useEffect(() => {
-  saveCustomExercises(customExercises);
-}, [customExercises]);
   const timerRef = useRef(null);
   const durationRef = useRef(null);
 
@@ -1995,34 +1918,14 @@ useEffect(() => {
       <div className="app-shell">
         <div className="phone">
           {tab === "home" && <HomeScreen stats={stats} profile={profile} customWorkouts={customWorkouts} onStartWorkout={startWorkout} onNavigate={setTab} onFreestyle={() => setTab("freestyle")} />}
-          {tab === "explore" && (
-            <ExploreScreen
-              workouts={filteredWorkouts}
-              categories={categories}
-              filterCategory={filterCategory}
-              setFilterCategory={setFilterCategory}
-              customWorkoutIds={new Set(customWorkouts.map(w => w.id))}
-              onStartWorkout={startWorkout}
-              onCreateWorkout={() => { setEditingWorkout(null); setTab("create"); }}
-              onEditWorkout={(w) => { setEditingWorkout(w); setTab("create"); }}
-              onDeleteWorkout={(id) => setCustomWorkouts(prev => prev.filter(w => w.id !== id))}
-            />
-          )}
+          {tab === "explore" && <ExploreScreen workouts={filteredWorkouts} categories={categories} filterCategory={filterCategory} setFilterCategory={setFilterCategory} onStartWorkout={startWorkout} onCreateWorkout={() => setTab("create")} />}
           {tab === "create" && (
             <CreateWorkoutScreen
               customExercises={customExercises}
-              customWorkouts={customWorkouts}
               onAddCustomExercise={(ex) => setCustomExercises(prev => [...prev, ex])}
-              initialWorkout={editingWorkout}
-              isCustomWorkout={editingWorkout ? customWorkouts.some(w => w.id === editingWorkout.id) : false}
-              onBack={() => { setEditingWorkout(null); setTab("explore"); }}
-              onSave={(w, mode, targetId) => {
-                if (mode === "overwrite" && targetId) {
-                  setCustomWorkouts(prev => prev.map(cw => cw.id === targetId ? { ...w, id: targetId } : cw));
-                } else {
-                  setCustomWorkouts(prev => [...prev, w]);
-                }
-                setEditingWorkout(null);
+              onBack={() => setTab("explore")}
+              onSave={(w) => {
+                setCustomWorkouts(prev => [...prev, w]);
                 setTab("explore");
               }}
             />
@@ -2063,7 +1966,7 @@ useEffect(() => {
             />
           )}
           {tab === "progress" && <ProgressScreen workoutLog={workoutLog} />}
-          {tab === "profile" && <ProfileScreen stats={stats} profile={profile} updateProfile={updateProfile} workoutLog={workoutLog} customWorkouts={customWorkouts} />}
+          {tab === "profile" && <ProfileScreen stats={stats} profile={profile} updateProfile={updateProfile} />}
 
           {tab !== "workout" && tab !== "create" && tab !== "freestyle" && (
             <div className="bottom-nav">
@@ -2209,12 +2112,10 @@ function HomeScreen({ stats, profile, customWorkouts, onStartWorkout, onNavigate
 
 // ─── EXPLORE SCREEN ──────────────────────────────────────────────────────────
 
-function ExploreScreen({ workouts, categories, filterCategory, setFilterCategory, customWorkoutIds, onStartWorkout, onCreateWorkout, onEditWorkout, onDeleteWorkout }) {
+function ExploreScreen({ workouts, categories, filterCategory, setFilterCategory, onStartWorkout, onCreateWorkout }) {
   const tagColors = { "Push Day": "#C6F135", "Leg Day": "#C6F135", "Recovery": "#7B9FFF", "HIIT": "#FF8C42", "Custom": "#FF8C42" };
-  const [confirmDelete, setConfirmDelete] = useState(null);
-
   return (
-    <div className="screen" style={{ position: "relative" }}>
+    <div className="screen">
       <div className="explore-header">
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
           <div>
@@ -2249,107 +2150,32 @@ function ExploreScreen({ workouts, categories, filterCategory, setFilterCategory
             <div className="icon">🔍</div>
             <p>No workouts found</p>
           </div>
-        ) : workouts.map(w => {
-          const isCustom = customWorkoutIds && customWorkoutIds.has(w.id);
-          return (
-            <div key={w.id} className="explore-card pressable" onClick={() => onStartWorkout(w)}>
-              <div className="bg" style={{ background: w.bg }}>{w.emoji}</div>
-              <div className="overlay">
-                <div className="ec-tag" style={{ color: tagColors[w.category] || "#C6F135" }}>{w.category}</div>
-                <div className="ec-name">{w.name}</div>
-                <div className="ec-meta">
-                  <span>⏱ {w.duration} min</span>
-                  <span>⚡ {w.difficulty}</span>
-                </div>
+        ) : workouts.map(w => (
+          <div key={w.id} className="explore-card pressable" onClick={() => onStartWorkout(w)}>
+            <div className="bg" style={{ background: w.bg }}>{w.emoji}</div>
+            <div className="overlay">
+              <div className="ec-tag" style={{ color: tagColors[w.category] || "#C6F135" }}>{w.category}</div>
+              <div className="ec-name">{w.name}</div>
+              <div className="ec-meta">
+                <span>⏱ {w.duration} min</span>
+                <span>⚡ {w.difficulty}</span>
               </div>
-              <div style={{ position: "absolute", top: 10, right: 10, display: "flex", gap: 8, zIndex: 2 }}>
-                <div
-                  className="pressable"
-                  onClick={(e) => { e.stopPropagation(); onEditWorkout && onEditWorkout(w); }}
-                  title="Edit workout"
-                  style={{
-                    width: 32, height: 32, borderRadius: 10,
-                    background: "rgba(0,0,0,0.55)", border: "1px solid rgba(255,255,255,0.15)",
-                    display: "flex", alignItems: "center", justifyContent: "center",
-                    backdropFilter: "blur(4px)",
-                  }}
-                >
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#C6F135" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M12 20h9"/>
-                    <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/>
-                  </svg>
-                </div>
-                {isCustom && (
-                  <div
-                    className="pressable"
-                    onClick={(e) => { e.stopPropagation(); setConfirmDelete(w); }}
-                    title="Delete workout"
-                    style={{
-                      width: 32, height: 32, borderRadius: 10,
-                      background: "rgba(0,0,0,0.55)", border: "1px solid rgba(255,69,69,0.3)",
-                      display: "flex", alignItems: "center", justifyContent: "center",
-                      backdropFilter: "blur(4px)",
-                    }}
-                  >
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--red)" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M3 6h18"/>
-                      <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0-1 14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L4 6"/>
-                    </svg>
-                  </div>
-                )}
-              </div>
-            </div>
-          );
-        })}
-        <div style={{ height: 16 }} />
-      </div>
-
-      {confirmDelete && (
-        <div className="modal-overlay" onClick={() => setConfirmDelete(null)}>
-          <div className="modal" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <div className="modal-title">Delete Workout</div>
-            </div>
-            <div className="modal-body" style={{ paddingTop: 0 }}>
-              <div style={{ fontSize: 13, color: "var(--gray)", lineHeight: 1.5 }}>
-                Delete <span style={{ color: "var(--white)", fontWeight: 700 }}>"{confirmDelete.name}"</span>? This can't be undone.
-              </div>
-            </div>
-            <div className="modal-actions">
-              <button className="btn btn-secondary pressable" onClick={() => setConfirmDelete(null)}>Cancel</button>
-              <button
-                className="btn pressable"
-                style={{ background: "rgba(255,69,69,0.15)", border: "1px solid rgba(255,69,69,0.35)", color: "var(--red)" }}
-                onClick={() => { onDeleteWorkout && onDeleteWorkout(confirmDelete.id); setConfirmDelete(null); }}
-              >
-                DELETE
-              </button>
             </div>
           </div>
-        </div>
-      )}
+        ))}
+        <div style={{ height: 16 }} />
+      </div>
     </div>
   );
 }
 
 // ─── CREATE WORKOUT SCREEN ───────────────────────────────────────────────────
 
-function CreateWorkoutScreen({ customExercises, customWorkouts, onAddCustomExercise, onBack, onSave, initialWorkout, isCustomWorkout }) {
-  const [name, setName] = useState(initialWorkout ? initialWorkout.name : "");
-  const [category, setCategory] = useState(initialWorkout ? initialWorkout.category : "Custom");
-  const [emoji, setEmoji] = useState(initialWorkout ? initialWorkout.emoji : "💪");
-  const [exercises, setExercises] = useState(() => initialWorkout
-    ? initialWorkout.exercises.map(ex => ({
-        id: Date.now() + Math.random(),
-        name: ex.name,
-        muscle: ex.muscle || "Other",
-        rest: ex.rest,
-        isUnilateral: ex.isUnilateral || false,
-        setConfigs: (ex.setConfigs && ex.setConfigs.length)
-          ? ex.setConfigs.map(sc => ({ reps: sc.reps, weight: typeof sc.weight === "number" ? sc.weight : parseWeight(sc.weight) }))
-          : Array.from({ length: ex.sets }, () => ({ reps: ex.reps, weight: parseWeight(ex.weight) })),
-      }))
-    : []);
+function CreateWorkoutScreen({ customExercises, onAddCustomExercise, onBack, onSave }) {
+  const [name, setName] = useState("");
+  const [category, setCategory] = useState("Custom");
+  const [emoji, setEmoji] = useState("💪");
+  const [exercises, setExercises] = useState([]);
   const [search, setSearch] = useState("");
   const [showSearch, setShowSearch] = useState(false);
   const [showCustomForm, setShowCustomForm] = useState(false);
@@ -2357,11 +2183,8 @@ function CreateWorkoutScreen({ customExercises, customWorkouts, onAddCustomExerc
   const [customExMuscle, setCustomExMuscle] = useState("");
   const [customExWeightType, setCustomExWeightType] = useState("kg");
   const [customExIsUnilateral, setCustomExIsUnilateral] = useState(false);
-  const [showSaveChoice, setShowSaveChoice] = useState(false);
   const searchRef = useRef(null);
   const customNameRef = useRef(null);
-
-  const isEditing = !!initialWorkout;
 
   const fullLibrary = useMemo(() => {
     const customAsLibrary = customExercises.map(e => ({
@@ -2383,9 +2206,11 @@ function CreateWorkoutScreen({ customExercises, customWorkouts, onAddCustomExerc
       id: Date.now() + Math.random(),
       name: libEx.name,
       muscle: libEx.muscle,
+      sets: 3,
+      reps: libEx.defaultReps,
       rest: 60,
+      weight: libEx.defaultWeight,
       isUnilateral: libEx.isUnilateral || false,
-      setConfigs: Array.from({ length: 3 }, () => ({ reps: libEx.defaultReps, weight: libEx.defaultWeight })),
     }]);
     setSearch("");
     setShowSearch(false);
@@ -2412,9 +2237,11 @@ function CreateWorkoutScreen({ customExercises, customWorkouts, onAddCustomExerc
       id: Date.now() + Math.random(),
       name: trimmedName,
       muscle: trimmedMuscle,
+      sets: 3,
+      reps: 10,
       rest: 60,
+      weight: defaultWeight,
       isUnilateral: customExIsUnilateral,
-      setConfigs: Array.from({ length: 3 }, () => ({ reps: 10, weight: defaultWeight })),
     }]);
     setCustomExName("");
     setCustomExMuscle("");
@@ -2430,113 +2257,51 @@ function CreateWorkoutScreen({ customExercises, customWorkouts, onAddCustomExerc
     setExercises(prev => prev.map(ex => ex.id === id ? { ...ex, isUnilateral: !ex.isUnilateral } : ex));
   };
 
-  const moveExercise = (idx, dir) => {
-    setExercises(prev => {
-      const newIdx = idx + dir;
-      if (newIdx < 0 || newIdx >= prev.length) return prev;
-      const copy = [...prev];
-      const tmp = copy[idx];
-      copy[idx] = copy[newIdx];
-      copy[newIdx] = tmp;
-      return copy;
-    });
-  };
-
-  const adjustRest = (id, delta) => {
-    setExercises(prev => prev.map(ex => ex.id === id ? { ...ex, rest: Math.max(0, ex.rest + delta) } : ex));
-  };
-
-  const adjustSetConfig = (exId, setIdx, field, delta) => {
+  const adjustEx = (id, field, delta) => {
     setExercises(prev => prev.map(ex => {
-      if (ex.id !== exId) return ex;
-      const setConfigs = ex.setConfigs.map((sc, i) => {
-        if (i !== setIdx) return sc;
-        if (field === "reps") return { ...sc, reps: Math.max(1, sc.reps + delta) };
-        if (field === "weight") {
-          if (sc.weight === "BW" || sc.weight === "—") return sc;
-          return { ...sc, weight: Math.max(0, sc.weight + delta) };
-        }
-        return sc;
-      });
-      return { ...ex, setConfigs };
-    }));
-  };
-
-  const addSetConfig = (exId) => {
-    setExercises(prev => prev.map(ex => {
-      if (ex.id !== exId) return ex;
-      const last = ex.setConfigs[ex.setConfigs.length - 1];
-      return { ...ex, setConfigs: [...ex.setConfigs, { ...last }] };
-    }));
-  };
-
-  const removeSetConfig = (exId, setIdx) => {
-    setExercises(prev => prev.map(ex => {
-      if (ex.id !== exId) return ex;
-      if (ex.setConfigs.length <= 1) return ex;
-      return { ...ex, setConfigs: ex.setConfigs.filter((_, i) => i !== setIdx) };
+      if (ex.id !== id) return ex;
+      if (field === "sets") return { ...ex, sets: Math.max(1, ex.sets + delta) };
+      if (field === "reps") return { ...ex, reps: Math.max(1, ex.reps + delta) };
+      if (field === "rest") return { ...ex, rest: Math.max(0, ex.rest + delta) };
+      if (field === "weight") {
+        if (ex.weight === "BW" || ex.weight === "—") return ex;
+        return { ...ex, weight: Math.max(0, ex.weight + delta) };
+      }
+      return ex;
     }));
   };
 
   const estimatedDuration = exercises.reduce((acc, ex) => {
     const setTime = 45;
     const restTime = ex.rest;
-    return acc + ex.setConfigs.length * (setTime + restTime);
+    return acc + ex.sets * (setTime + restTime);
   }, 0);
 
   const canSave = name.trim().length > 0 && exercises.length > 0;
 
-  const buildWorkoutObject = () => ({
-    id: Date.now(),
-    name: name.trim().toUpperCase(),
-    category,
-    emoji,
-    duration: Math.round(estimatedDuration / 60),
-    difficulty: exercises.length > 5 ? "Advanced" : exercises.length > 3 ? "Intermediate" : "Beginner",
-    color: "#FF8C42",
-    bg: "linear-gradient(160deg, #2a1a0a, #1a0a00)",
-    exercises: exercises.map((ex, i) => ({
-      id: i + 1,
-      name: ex.name,
-      muscle: ex.muscle,
-      rest: ex.rest,
-      isUnilateral: ex.isUnilateral || false,
-      sets: ex.setConfigs.length,
-      reps: ex.setConfigs[0]?.reps ?? 1,
-      weight: typeof ex.setConfigs[0]?.weight === "number" ? `${ex.setConfigs[0].weight}kg` : (ex.setConfigs[0]?.weight ?? "—"),
-      setConfigs: ex.setConfigs.map(sc => ({ reps: sc.reps, weight: sc.weight })),
-    })),
-  });
-
-  // Find an existing custom workout this save would collide with — either the
-  // one we started editing, or another custom workout that now shares the same name.
-  const getOverwriteTarget = () => {
-    if (!customWorkouts) return null;
-    const trimmedName = name.trim().toUpperCase();
-    return (
-      customWorkouts.find(cw => initialWorkout && cw.id === initialWorkout.id) ||
-      customWorkouts.find(cw => cw.name.trim().toUpperCase() === trimmedName) ||
-      null
-    );
+  const handleSave = () => {
+    const workout = {
+      id: Date.now(),
+      name: name.trim().toUpperCase(),
+      category,
+      emoji,
+      duration: Math.round(estimatedDuration / 60),
+      difficulty: exercises.length > 5 ? "Advanced" : exercises.length > 3 ? "Intermediate" : "Beginner",
+      color: "#FF8C42",
+      bg: "linear-gradient(160deg, #2a1a0a, #1a0a00)",
+      exercises: exercises.map((ex, i) => ({
+        id: i + 1,
+        name: ex.name,
+        muscle: ex.muscle,
+        sets: ex.sets,
+        reps: ex.reps,
+        rest: ex.rest,
+        weight: typeof ex.weight === "number" ? `${ex.weight}kg` : ex.weight,
+        isUnilateral: ex.isUnilateral || false,
+      })),
+    };
+    onSave(workout);
   };
-
-  const commitSave = (mode) => {
-    setShowSaveChoice(false);
-    const target = getOverwriteTarget();
-    onSave(buildWorkoutObject(), mode, mode === "overwrite" ? target?.id : undefined);
-  };
-
-  const handleSaveClick = () => {
-    if (!canSave) return;
-    const target = getOverwriteTarget();
-    if (target) {
-      setShowSaveChoice(true);
-    } else {
-      commitSave("new");
-    }
-  };
-
-  const saveTarget = getOverwriteTarget();
 
   return (
     <div className="screen" style={{ position: "relative" }}>
@@ -2544,12 +2309,10 @@ function CreateWorkoutScreen({ customExercises, customWorkouts, onAddCustomExerc
         <button className="back-btn" onClick={onBack}>
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F0F0F0" strokeWidth="2.5" strokeLinecap="round"><polyline points="15 18 9 12 15 6"/></svg>
         </button>
-        <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 18, color: "var(--white)", letterSpacing: 2 }}>
-          {isEditing ? "EDIT WORKOUT" : "BUILD WORKOUT"}
-        </div>
+        <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 18, color: "var(--white)", letterSpacing: 2 }}>BUILD WORKOUT</div>
         <button
           className="pressable"
-          onClick={canSave ? handleSaveClick : undefined}
+          onClick={canSave ? handleSave : undefined}
           style={{
             background: canSave ? "var(--lime)" : "var(--card)",
             border: canSave ? "none" : "1px solid var(--border)",
@@ -2563,14 +2326,6 @@ function CreateWorkoutScreen({ customExercises, customWorkouts, onAddCustomExerc
           SAVE
         </button>
       </div>
-
-      {isEditing && (
-        <div style={{ margin: "10px 20px 0", background: "rgba(198,241,53,0.06)", border: "1px solid rgba(198,241,53,0.2)", borderRadius: 12, padding: "10px 12px", fontSize: 11, color: "var(--lime)", lineHeight: 1.4 }}>
-          {isCustomWorkout
-            ? `Editing "${initialWorkout.name}" — you'll be able to overwrite it or save as a new workout.`
-            : `Editing a copy of "${initialWorkout.name}" — this will be saved as a brand new workout.`}
-        </div>
-      )}
 
       <div className="scroll-area" style={{ paddingTop: 2 }}>
         <div style={{ padding: "14px 20px 0" }}>
@@ -2595,11 +2350,6 @@ function CreateWorkoutScreen({ customExercises, customWorkouts, onAddCustomExerc
               maxLength={30}
             />
           </div>
-          {saveTarget && (
-            <div style={{ fontSize: 10, color: "var(--gray)", marginTop: 6, letterSpacing: 0.3 }}>
-              A custom workout named "{saveTarget.name}" already exists — saving will offer to overwrite it.
-            </div>
-          )}
         </div>
 
         <div style={{ padding: "12px 20px 0" }}>
@@ -2769,110 +2519,30 @@ function CreateWorkoutScreen({ customExercises, customWorkouts, onAddCustomExerc
                   <div className="builder-ex-name">{ex.name}</div>
                   <div className="builder-ex-muscle">{ex.muscle}</div>
                 </div>
-                <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                  <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 10, color: "var(--gray)", marginRight: 2 }}>#{idx + 1}</div>
-                  <div
-                    className="pressable"
-                    onClick={() => moveExercise(idx, -1)}
-                    style={{
-                      width: 26, height: 26, borderRadius: 8,
-                      background: "rgba(255,255,255,0.06)", border: "1px solid var(--border)",
-                      display: "flex", alignItems: "center", justifyContent: "center",
-                      cursor: idx === 0 ? "default" : "pointer", opacity: idx === 0 ? 0.3 : 1,
-                    }}
-                    title="Move up"
-                  >
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--gray-light)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M18 15l-6-6-6 6"/></svg>
-                  </div>
-                  <div
-                    className="pressable"
-                    onClick={() => moveExercise(idx, 1)}
-                    style={{
-                      width: 26, height: 26, borderRadius: 8,
-                      background: "rgba(255,255,255,0.06)", border: "1px solid var(--border)",
-                      display: "flex", alignItems: "center", justifyContent: "center",
-                      cursor: idx === exercises.length - 1 ? "default" : "pointer", opacity: idx === exercises.length - 1 ? 0.3 : 1,
-                    }}
-                    title="Move down"
-                  >
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--gray-light)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M6 9l6 6 6-6"/></svg>
-                  </div>
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 10, color: "var(--gray)" }}>#{idx + 1}</div>
                   <div className="remove-btn" onClick={() => removeExercise(ex.id)}>
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--red)" strokeWidth="2.5" strokeLinecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
                   </div>
                 </div>
               </div>
 
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 14px", borderBottom: "1px solid var(--border)" }}>
-                <div className="config-label" style={{ marginBottom: 0 }}>REST BETWEEN SETS</div>
-                <div className="config-stepper-row">
-                  <div className="cfg-btn pressable" onClick={() => adjustRest(ex.id, -15)}>−</div>
-                  <div className="cfg-val" style={{ minWidth: 40 }}>{ex.rest}s</div>
-                  <div className="cfg-btn pressable" onClick={() => adjustRest(ex.id, 15)}>+</div>
-                </div>
-              </div>
-
-              <div style={{ display: "grid", gridTemplateColumns: "28px 1fr 1fr 30px", gap: 0, padding: "8px 14px 4px" }}>
-                {["SET", "REPS", "WEIGHT", ""].map((h, i) => (
-                  <div key={i} style={{ fontSize: 8, textTransform: "uppercase", letterSpacing: 1.5, color: "var(--gray)", fontWeight: 600, textAlign: i > 0 ? "center" : "left" }}>{h}</div>
-                ))}
-              </div>
-
-              {ex.setConfigs.map((sc, sIdx) => (
-                <div key={sIdx} style={{ display: "grid", gridTemplateColumns: "28px 1fr 1fr 30px", gap: 0, padding: "6px 14px", alignItems: "center" }}>
-                  <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 12, fontWeight: 700, color: "var(--gray-light)" }}>{sIdx + 1}</div>
-
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 3 }}>
-                    <div className="cfg-btn pressable" onClick={() => adjustSetConfig(ex.id, sIdx, "reps", -1)}>−</div>
-                    <div className="cfg-val">{sc.reps}</div>
-                    <div className="cfg-btn pressable" onClick={() => adjustSetConfig(ex.id, sIdx, "reps", 1)}>+</div>
-                  </div>
-
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 3 }}>
-                    {typeof sc.weight === "number" ? (
-                      <>
-                        <div className="cfg-btn pressable" onClick={() => adjustSetConfig(ex.id, sIdx, "weight", -1)}>−</div>
-                        <div className="cfg-val" style={{ minWidth: 34 }}>{sc.weight}kg</div>
-                        <div className="cfg-btn pressable" onClick={() => adjustSetConfig(ex.id, sIdx, "weight", 1)}>+</div>
-                      </>
-                    ) : (
-                      <div className="cfg-val" style={{ color: "var(--gray)" }}>{sc.weight}</div>
-                    )}
-                  </div>
-
-                  <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                    <div
-                      className="pressable"
-                      onClick={() => removeSetConfig(ex.id, sIdx)}
-                      style={{
-                        width: 22, height: 22, borderRadius: 6,
-                        background: "rgba(255,69,69,0.08)", border: "1px solid rgba(255,69,69,0.2)",
-                        display: "flex", alignItems: "center", justifyContent: "center",
-                        cursor: ex.setConfigs.length <= 1 ? "default" : "pointer",
-                        opacity: ex.setConfigs.length <= 1 ? 0.3 : 1,
-                      }}
-                      title="Remove set"
-                    >
-                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--red)" strokeWidth="3" strokeLinecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+              <div className="builder-config-row">
+                {[
+                  { label: "SETS", field: "sets", val: ex.sets, delta: 1, suffix: "" },
+                  { label: "REPS", field: "reps", val: ex.reps, delta: 1, suffix: "" },
+                  { label: "WEIGHT", field: "weight", val: typeof ex.weight === "number" ? ex.weight : null, display: typeof ex.weight === "number" ? `${ex.weight}kg` : ex.weight, delta: 2.5 },
+                  { label: "REST", field: "rest", val: ex.rest, delta: 15, suffix: "s" },
+                ].map(({ label, field, val, display, delta, suffix }) => (
+                  <div key={field} className="config-cell">
+                    <div className="config-label">{label}</div>
+                    <div className="config-stepper-row">
+                      <div className={`cfg-btn pressable ${val === null ? "disabled" : ""}`} style={{ opacity: val === null ? 0.25 : 1, cursor: val === null ? "default" : "pointer" }} onClick={() => val !== null && adjustEx(ex.id, field, -delta)}>−</div>
+                      <div className="cfg-val">{display !== undefined ? display : `${val}${suffix}`}</div>
+                      <div className={`cfg-btn pressable ${val === null ? "disabled" : ""}`} style={{ opacity: val === null ? 0.25 : 1, cursor: val === null ? "default" : "pointer" }} onClick={() => val !== null && adjustEx(ex.id, field, delta)}>+</div>
                     </div>
                   </div>
-                </div>
-              ))}
-
-              <div style={{ padding: "6px 14px 12px" }}>
-                <div
-                  className="pressable"
-                  onClick={() => addSetConfig(ex.id)}
-                  style={{
-                    display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
-                    padding: "7px 0", borderRadius: 10,
-                    background: "rgba(198,241,53,0.06)", border: "1px dashed rgba(198,241,53,0.3)",
-                    color: "var(--lime)", fontSize: 11, fontWeight: 700, letterSpacing: 0.5, cursor: "pointer",
-                  }}
-                >
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--lime)" strokeWidth="3" strokeLinecap="round"><path d="M12 5v14M5 12h14"/></svg>
-                  ADD SET
-                </div>
+                ))}
               </div>
 
               <div
@@ -2893,7 +2563,7 @@ function CreateWorkoutScreen({ customExercises, customWorkouts, onAddCustomExerc
                     {ex.isUnilateral ? "↔ Unilateral" : "↔ Bilateral"}
                   </div>
                   <div style={{ fontSize: 9, color: "#555", marginTop: 1 }}>
-                    {ex.isUnilateral ? "Reps performed per side" : "Both sides together"}
+                    {ex.isUnilateral ? `${ex.reps} reps/side · ${ex.sets} sets total` : "Both sides together"}
                   </div>
                 </div>
                 <div style={{
@@ -2922,7 +2592,7 @@ function CreateWorkoutScreen({ customExercises, customWorkouts, onAddCustomExerc
               <div style={{ fontSize: 9, color: "var(--gray)", textTransform: "uppercase", letterSpacing: 1 }}>Exercises</div>
             </div>
             <div style={{ textAlign: "center" }}>
-              <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 22, color: "var(--white)" }}>{exercises.reduce((a, e) => a + e.setConfigs.length, 0)}</div>
+              <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 22, color: "var(--white)" }}>{exercises.reduce((a, e) => a + e.sets, 0)}</div>
               <div style={{ fontSize: 9, color: "var(--gray)", textTransform: "uppercase", letterSpacing: 1 }}>Total Sets</div>
             </div>
             <div style={{ textAlign: "center" }}>
@@ -2946,37 +2616,11 @@ function CreateWorkoutScreen({ customExercises, customWorkouts, onAddCustomExerc
             cursor: canSave ? "pointer" : "default",
             opacity: canSave ? 1 : 0.6,
           }}
-          onClick={canSave ? handleSaveClick : undefined}
+          onClick={canSave ? handleSave : undefined}
         >
           {canSave ? `SAVE "${name.trim().toUpperCase()}"` : exercises.length === 0 ? "ADD EXERCISES TO SAVE" : "NAME YOUR WORKOUT"}
         </button>
       </div>
-
-      {showSaveChoice && (
-        <div className="modal-overlay" onClick={() => setShowSaveChoice(false)}>
-          <div className="modal" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <div className="modal-title">Save Changes</div>
-            </div>
-            <div className="modal-body" style={{ paddingTop: 0 }}>
-              <div style={{ fontSize: 13, color: "var(--gray)", lineHeight: 1.5, marginBottom: 4 }}>
-                Update <span style={{ color: "var(--white)", fontWeight: 700 }}>"{saveTarget?.name}"</span> directly, or keep the original and save this as a brand new workout.
-              </div>
-            </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 10, padding: "0 24px 24px" }}>
-              <button className="btn btn-primary pressable" style={{ flex: "none" }} onClick={() => commitSave("overwrite")}>
-                OVERWRITE ORIGINAL
-              </button>
-              <button className="btn pressable" style={{ flex: "none", background: "rgba(198,241,53,0.08)", border: "1px solid rgba(198,241,53,0.25)", color: "var(--lime)" }} onClick={() => commitSave("new")}>
-                SAVE AS NEW WORKOUT
-              </button>
-              <button className="btn btn-secondary pressable" style={{ flex: "none" }} onClick={() => setShowSaveChoice(false)}>
-                CANCEL
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
@@ -3210,9 +2854,9 @@ function FreestyleWorkoutScreen({ customExercises, onAddCustomExercise, onFinish
                 <div style={{ textAlign: "center" }}>
                   <div className="config-label" style={{ marginBottom: 7 }}>WEIGHT</div>
                   <div className="config-stepper-row" style={{ gap: 8 }}>
-                    <div className="cfg-btn pressable" style={{ width: 30, height: 30, fontSize: 16 }} onClick={() => adjustDraft("weight", -1)}>−</div>
+                    <div className="cfg-btn pressable" style={{ width: 30, height: 30, fontSize: 16 }} onClick={() => adjustDraft("weight", -2.5)}>−</div>
                     <div className="cfg-val" style={{ fontSize: 18, minWidth: 50 }}>{draftWeight}kg</div>
-                    <div className="cfg-btn pressable" style={{ width: 30, height: 30, fontSize: 16 }} onClick={() => adjustDraft("weight", 1)}>+</div>
+                    <div className="cfg-btn pressable" style={{ width: 30, height: 30, fontSize: 16 }} onClick={() => adjustDraft("weight", 2.5)}>+</div>
                   </div>
                 </div>
               )}
@@ -3471,14 +3115,14 @@ function WorkoutScreen({
                           <>
                             <div
                               style={{ width: 24, height: 24, borderRadius: 7, background: "rgba(255,255,255,0.06)", border: "1px solid var(--border)", display: "flex", alignItems: "center", justifyContent: "center", cursor: done ? "default" : "pointer", fontSize: 13, color: "var(--gray-light)", opacity: done ? 0.3 : 1, userSelect: "none" }}
-                              onClick={() => !done && onAdjust(ex.id, sIdx, "weight", -1)}
+                              onClick={() => !done && onAdjust(ex.id, sIdx, "weight", -2.5)}
                             >−</div>
                             <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 12, fontWeight: 700, color: done ? "var(--gray)" : isActiveSet ? "var(--white)" : "var(--gray-light)", minWidth: 34, textAlign: "center" }}>
                               {set.weight}kg
                             </div>
                             <div
                               style={{ width: 24, height: 24, borderRadius: 7, background: "rgba(255,255,255,0.06)", border: "1px solid var(--border)", display: "flex", alignItems: "center", justifyContent: "center", cursor: done ? "default" : "pointer", fontSize: 13, color: "var(--gray-light)", opacity: done ? 0.3 : 1, userSelect: "none" }}
-                              onClick={() => !done && onAdjust(ex.id, sIdx, "weight", 1)}
+                              onClick={() => !done && onAdjust(ex.id, sIdx, "weight", 2.5)}
                             >+</div>
                           </>
                         ) : (
@@ -3956,7 +3600,7 @@ function ProgressScreen({ workoutLog }) {
 
 // ─── PROFILE SCREEN ──────────────────────────────────────────────────────────
 
-function ProfileScreen({ stats, profile, updateProfile, workoutLog, customWorkouts }) {
+function ProfileScreen({ stats, profile, updateProfile }) {
   const [editing, setEditing] = useState(false);
   const [editForm, setEditForm] = useState(profile);
   
@@ -3975,13 +3619,6 @@ function ProfileScreen({ stats, profile, updateProfile, workoutLog, customWorkou
   const memberSince = new Date(profile.joinDate).getFullYear();
   const totalVolumeThisWeek = stats.weeklyVolume.reduce((a, b) => a + b, 0);
   const bmi = profile.weight && profile.height ? (profile.weight / ((profile.height / 100) ** 2)).toFixed(1) : '—';
-
-  const achievements = useMemo(
-    () => getAchievementStatus(stats, workoutLog, customWorkouts),
-    [stats, workoutLog, customWorkouts]
-  );
-  const earnedAchievements = achievements.filter(a => a.earned);
-  const lockedAchievements = achievements.filter(a => !a.earned);
 
   return (
     <div className="screen">
@@ -4067,11 +3704,10 @@ function ProfileScreen({ stats, profile, updateProfile, workoutLog, customWorkou
         </button>
         <div className="section-header">
           <div className="section-title">ACHIEVEMENTS</div>
-          <div className="section-link" style={{ cursor: "default" }}>{earnedAchievements.length}/{achievements.length}</div>
         </div>
 
         <div className="ach-grid">
-          {earnedAchievements.map(a => (
+          {ACHIEVEMENTS.filter(a => a.earned).map(a => (
             <div key={a.id} className="ach-badge earned pressable">
               <div className="ach-icon">{a.icon}</div>
               <div className="ach-name">{a.name}</div>
@@ -4079,17 +3715,11 @@ function ProfileScreen({ stats, profile, updateProfile, workoutLog, customWorkou
               <div className="ach-earned-tag">✓ EARNED</div>
             </div>
           ))}
-          {lockedAchievements.map(a => (
+          {ACHIEVEMENTS.filter(a => !a.earned).slice(0, 2).map(a => (
             <div key={a.id} className="ach-badge pressable">
               <div className="ach-icon" style={{ filter: "grayscale(1)", opacity: 0.35 }}>{a.icon}</div>
               <div className="ach-name" style={{ color: "#555" }}>{a.name}</div>
               <div className="ach-desc">{a.desc}</div>
-              <div style={{ background: "rgba(255,255,255,0.06)", borderRadius: 4, height: 5, marginTop: 8, overflow: "hidden" }}>
-                <div style={{ width: `${a.progress * 100}%`, height: "100%", background: "rgba(198,241,53,0.45)", borderRadius: 4, transition: "width 0.4s ease" }} />
-              </div>
-              <div style={{ fontSize: 9, color: "var(--gray)", marginTop: 4, fontFamily: "'Space Mono', monospace" }}>
-                {a.target === 1 ? "0/1" : `${Math.min(a.value, a.target)}${a.unit ? a.unit : ""}/${a.target}${a.unit ? a.unit : ""}`}
-              </div>
               <div className="ach-locked-tag">🔒 LOCKED</div>
             </div>
           ))}
