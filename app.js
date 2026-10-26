@@ -94,6 +94,7 @@ const DEFAULT_PROFILE = {
     chest: 100,
     waist: 80,
     biceps: 38,
+    forearm: 30,
     thighs: 58,
   },
   joinDate: new Date().toISOString(),
@@ -115,8 +116,15 @@ const AFFIRMATIONS = [
 // ─── LOCAL STORAGE HELPERS ──────────────────────────────────────────────────
 
 function loadProfile() {
-  const saved = localStorage.getItem('forgeProfile');
-  return saved ? JSON.parse(saved) : DEFAULT_PROFILE;
+  try {
+    const saved = localStorage.getItem('forgeProfile');
+    if (!saved) return DEFAULT_PROFILE;
+    const parsed = JSON.parse(saved);
+    // Merge with defaults so profiles saved before a field existed (e.g. forearm) still work
+    return { ...DEFAULT_PROFILE, ...parsed, measurements: { ...DEFAULT_PROFILE.measurements, ...(parsed.measurements || {}) } };
+  } catch (e) {
+    return DEFAULT_PROFILE;
+  }
 }
 
 function saveProfile(profile) {
@@ -160,6 +168,7 @@ function exportUserDataToCSV() {
     ["Stats", "Active Hours", stats.activeHoursThisWeek],
     ["Measurements", "Chest", profile.measurements.chest],
     ["Measurements", "Biceps", profile.measurements.biceps],
+    ["Measurements", "Forearm", profile.measurements.forearm],
     ["Measurements", "Waist", profile.measurements.waist],
     ["Measurements", "Thighs", profile.measurements.thighs],
     ["System", "Export Date", new Date().toLocaleString()],
@@ -4181,7 +4190,12 @@ function ProfileScreen({ stats, profile, updateProfile, workoutLog, customWorkou
   
 
   const handleSave = () => {
-    updateProfile(editForm);
+    const measurements = {};
+    Object.keys(DEFAULT_PROFILE.measurements).forEach(key => {
+      const v = parseFloat(editForm.measurements[key]);
+      measurements[key] = Number.isFinite(v) && v > 0 ? Math.round(v * 2) / 2 : profile.measurements[key];
+    });
+    updateProfile({ ...editForm, measurements });
     setEditing(false);
   };
 
@@ -4218,9 +4232,7 @@ function ProfileScreen({ stats, profile, updateProfile, workoutLog, customWorkou
           </div>
           <div className="profile-name">{profile.name || 'SET YOUR NAME'}</div>
           <div className="profile-handle">Member since {memberSince}</div>
-          <button className="edit-btn pressable" onClick={() => setEditing(true)}>
-          Edit Profile
-        </button>
+         
         </div>
 
         <div className="stats-grid">
@@ -4275,12 +4287,18 @@ function ProfileScreen({ stats, profile, updateProfile, workoutLog, customWorkou
             <div className="info-value">{profile.measurements.biceps} cm</div>
           </div>
           <div className="info-row">
+            <div className="info-label">Forearm</div>
+            <div className="info-value">{profile.measurements.forearm} cm</div>
+          </div>
+          <div className="info-row">
             <div className="info-label">Thighs</div>
             <div className="info-value">{profile.measurements.thighs} cm</div>
           </div>
         </div>
 
-       
+        <button className="edit-btn pressable" onClick={() => setEditing(true)}>
+          Edit Profile
+        </button>
         <button className="edit-btn pressable" onClick={exportUserDataToCSV}>
           EXPORT DATA (CSV)
         </button>
@@ -4355,42 +4373,26 @@ function ProfileScreen({ stats, profile, updateProfile, workoutLog, customWorkou
               <div className="form-group">
                 <label className="form-label">Measurements (cm)</label>
                 <div className="measurements-grid">
-                  <div>
-                    <label className="form-label" style={{fontSize: '10px', marginBottom: '4px'}}>Chest</label>
-                    <input
-                      type="number"
-                      className="form-input"
-                      value={editForm.measurements.chest}
-                      onChange={(e) => setEditForm({...editForm, measurements: {...editForm.measurements, chest: parseInt(e.target.value) || 0}})}
-                    />
-                  </div>
-                  <div>
-                    <label className="form-label" style={{fontSize: '10px', marginBottom: '4px'}}>Waist</label>
-                    <input
-                      type="number"
-                      className="form-input"
-                      value={editForm.measurements.waist}
-                      onChange={(e) => setEditForm({...editForm, measurements: {...editForm.measurements, waist: parseInt(e.target.value) || 0}})}
-                    />
-                  </div>
-                  <div>
-                    <label className="form-label" style={{fontSize: '10px', marginBottom: '4px'}}>Biceps</label>
-                    <input
-                      type="number"
-                      className="form-input"
-                      value={editForm.measurements.biceps}
-                      onChange={(e) => setEditForm({...editForm, measurements: {...editForm.measurements, biceps: parseInt(e.target.value) || 0}})}
-                    />
-                  </div>
-                  <div>
-                    <label className="form-label" style={{fontSize: '10px', marginBottom: '4px'}}>Thighs</label>
-                    <input
-                      type="number"
-                      className="form-input"
-                      value={editForm.measurements.thighs}
-                      onChange={(e) => setEditForm({...editForm, measurements: {...editForm.measurements, thighs: parseInt(e.target.value) || 0}})}
-                    />
-                  </div>
+                  {[
+                    ["chest", "Chest"],
+                    ["waist", "Waist"],
+                    ["biceps", "Biceps"],
+                    ["forearm", "Forearm"],
+                    ["thighs", "Thighs"],
+                  ].map(([key, label]) => (
+                    <div key={key}>
+                      <label className="form-label" style={{fontSize: '10px', marginBottom: '4px'}}>{label}</label>
+                      <input
+                        type="number"
+                        inputMode="decimal"
+                        step="0.5"
+                        min="0"
+                        className="form-input"
+                        value={editForm.measurements[key] ?? ""}
+                        onChange={(e) => setEditForm({...editForm, measurements: {...editForm.measurements, [key]: e.target.value}})}
+                      />
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
