@@ -4218,7 +4218,9 @@ function ProfileScreen({ stats, profile, updateProfile, workoutLog, customWorkou
           </div>
           <div className="profile-name">{profile.name || 'SET YOUR NAME'}</div>
           <div className="profile-handle">Member since {memberSince}</div>
-         
+          <button className="edit-btn pressable" onClick={() => setEditing(true)}>
+          Edit Profile
+        </button>
         </div>
 
         <div className="stats-grid">
@@ -4278,9 +4280,7 @@ function ProfileScreen({ stats, profile, updateProfile, workoutLog, customWorkou
           </div>
         </div>
 
-        <button className="edit-btn pressable" onClick={() => setEditing(true)}>
-          Edit Profile
-        </button>
+       
         <button className="edit-btn pressable" onClick={exportUserDataToCSV}>
           EXPORT DATA (CSV)
         </button>
